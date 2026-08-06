@@ -1,0 +1,75 @@
+name: ibnaljazari_android
+description: "A new Flutter project."
+
+publish_to: 'none' 
+
+
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.9.2
+
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+
+  cupertino_icons: ^1.0.8
+  flutter_screenutil:
+  http:  
+  internet_connection_checker: 
+  flutter_bloc: 
+  jhijri: 
+  shared_preferences: 
+  toast: 
+  cached_network_image:
+  flutter_download_manager:
+  just_audio:
+  chewie:
+  sqflite: 
+  flutter_pdfview:
+  path_provider: 
+  permission_handler: 
+  video_player:
+  url_launcher:
+  firebase_core:
+  firebase_messaging:
+  flutter_local_notifications:
+  mobile_device_identifier:
+  flutter_secure_storage:
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_launcher_icons: "^0.13.1"
+
+flutter_launcher_icons:
+  android: true
+  ios: true
+  image_path: "assets/Application_Icon.png"
+
+
+  flutter_lints: ^5.0.0
+
+flutter:
+
+
+  uses-material-design: true
+
+  assets:
+    - assets/images/
+
+
+  fonts:
+  - family: Almarai
+    fonts:
+      - asset: assets/fonts/Almarai-Bold.ttf
+        weight: 700
+      - asset: assets/fonts/Almarai-ExtraBold.ttf
+      - asset: assets/fonts/Almarai-Light.ttf
+      - asset: assets/fonts/Almarai-Regular.ttf
+      
+  - family:  Mnb
+    fonts:
+      - asset: assets/fonts/mnb.ttf
