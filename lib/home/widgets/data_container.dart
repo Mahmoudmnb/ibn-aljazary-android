@@ -113,11 +113,13 @@ class _TestDataContainerState extends State<TestDataContainer> {
                               ),
                               SizedBox(height: 10.h),
                               Text(
-                                widget.data.data[index].mark.toString() ==
-                                            'true' ||
-                                        widget.data.data[index].mark
-                                                .toString() ==
-                                            '1'
+                                widget.data.data[index].dataType == 'boolean' &&
+                                        (widget.data.data[index].mark
+                                                    .toString() ==
+                                                'true' ||
+                                            widget.data.data[index].mark
+                                                    .toString() ==
+                                                '1')
                                     ? 'نعم'
                                     : widget.data.data[index].mark.toString() ==
                                               'false' ||

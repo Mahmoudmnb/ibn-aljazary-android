@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+import '../../core/app_colors.dart';
 import '../widgets/data_pages_app_bar.dart';
 
 class AboutInstitute extends StatelessWidget {
@@ -11,7 +12,7 @@ class AboutInstitute extends StatelessWidget {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        backgroundColor: Color(0xffF9F9F9),
+        backgroundColor: AppColors.brownBackgroundColor,
         body: SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.end,

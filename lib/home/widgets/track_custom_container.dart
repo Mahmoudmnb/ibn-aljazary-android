@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+import '../../core/app_colors.dart';
 import 'widgets.dart';
 
 class TrackCustomContainer extends StatelessWidget {
@@ -27,24 +28,26 @@ class TrackCustomContainer extends StatelessWidget {
             title,
             overflow: TextOverflow.ellipsis,
             style: TextStyle(
-                color: const Color(0xff30727C),
-                fontFamily: 'Almarai',
-                fontSize: 16.sp,
-                fontWeight: FontWeight.w700),
+              color: AppColors.green,
+              fontFamily: 'Almarai',
+              fontSize: 16.sp,
+              fontWeight: FontWeight.w700,
+            ),
           ),
           SizedBox(height: 14.h),
           ...List.generate(items.length, (index) {
             return Column(
               children: [
                 ProgressBar(
-                    maxValue: items[index].maxValue,
-                    value: items[index].value,
-                    progressColor: items[index].progressColor,
-                    lastColor: items[index].lastColor,
-                    rightText: items[index].rightText,
-                    lefText: items[index].lefText,
-                    width: items[index].width,
-                    height: items[index].height),
+                  maxValue: items[index].maxValue,
+                  value: items[index].value,
+                  progressColor: items[index].progressColor,
+                  lastColor: items[index].lastColor,
+                  rightText: items[index].rightText,
+                  lefText: items[index].lefText,
+                  width: items[index].width,
+                  height: items[index].height,
+                ),
                 index == items.length - 1
                     ? const SizedBox.shrink()
                     : SizedBox(height: 14.h),

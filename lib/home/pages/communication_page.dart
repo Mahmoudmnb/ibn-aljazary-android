@@ -12,15 +12,16 @@ class CommunicationPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xffF9F9F9),
+      backgroundColor: AppColors.brownBackgroundColor,
       body: SingleChildScrollView(
         child: Column(
           children: [
             DataPagesAppBar(
-                onBackButtonPressed: () {
-                  Navigator.of(context).pop();
-                },
-                title: 'للتواصل'),
+              onBackButtonPressed: () {
+                Navigator.of(context).pop();
+              },
+              title: 'للتواصل',
+            ),
             SizedBox(height: 16.h),
             CommunicationPageContainer(
               content: Column(
@@ -37,17 +38,20 @@ class CommunicationPage extends StatelessWidget {
                             await launchUrl(launchUri);
                           } catch (e) {
                             ToastContext().init(context);
-                            Toast.show('حصل خطأ غير متوقع',
-                                duration: Toast.lengthLong);
+                            Toast.show(
+                              'حصل خطأ غير متوقع',
+                              duration: Toast.lengthLong,
+                            );
                           }
                         },
                         child: Text(
                           '+963983130657',
                           style: TextStyle(
-                              fontFamily: 'Almarai',
-                              fontSize: 13.sp,
-                              fontWeight: FontWeight.w700,
-                              color: Color(0xff02A6FF)),
+                            fontFamily: 'Almarai',
+                            fontSize: 13.sp,
+                            fontWeight: FontWeight.w700,
+                            color: Color(0xff02A6FF),
+                          ),
                         ),
                       ),
                       Spacer(),
@@ -59,7 +63,7 @@ class CommunicationPage extends StatelessWidget {
                           fontWeight: FontWeight.w700,
                           color: AppColors.brownColor,
                         ),
-                      )
+                      ),
                     ],
                   ),
                   SizedBox(height: 8.h),
@@ -75,17 +79,20 @@ class CommunicationPage extends StatelessWidget {
                             await launchUrl(launchUri);
                           } catch (e) {
                             ToastContext().init(context);
-                            Toast.show('حصل خطأ غير متوقع',
-                                duration: Toast.lengthLong);
+                            Toast.show(
+                              'حصل خطأ غير متوقع',
+                              duration: Toast.lengthLong,
+                            );
                           }
                         },
                         child: Text(
                           '+963947219157',
                           style: TextStyle(
-                              fontFamily: 'Almarai',
-                              fontSize: 13.sp,
-                              fontWeight: FontWeight.w700,
-                              color: Color(0xff02A6FF)),
+                            fontFamily: 'Almarai',
+                            fontSize: 13.sp,
+                            fontWeight: FontWeight.w700,
+                            color: Color(0xff02A6FF),
+                          ),
                         ),
                       ),
                       Spacer(),
@@ -97,9 +104,9 @@ class CommunicationPage extends StatelessWidget {
                           fontWeight: FontWeight.w700,
                           color: AppColors.brownColor,
                         ),
-                      )
+                      ),
                     ],
-                  )
+                  ),
                 ],
               ),
               title: 'للتواصل',
@@ -109,8 +116,11 @@ class CommunicationPage extends StatelessWidget {
               content: GestureDetector(
                 onTap: () {
                   try {
-                    launchUrl(Uri.parse(
-                        'https://whatsapp.com/channel/0029VbAZddkBlHpbk8U4U72M'));
+                    launchUrl(
+                      Uri.parse(
+                        'https://whatsapp.com/channel/0029VbAZddkBlHpbk8U4U72M',
+                      ),
+                    );
                   } catch (e) {
                     ToastContext().init(context);
                     Toast.show('حصل خطأ غير متوقع', duration: Toast.lengthLong);
@@ -119,11 +129,12 @@ class CommunicationPage extends StatelessWidget {
                 child: Text(
                   'رابط الدخول للقناة',
                   style: TextStyle(
-                      decoration: TextDecoration.underline,
-                      fontFamily: 'Almarai',
-                      fontSize: 13.sp,
-                      fontWeight: FontWeight.w700,
-                      color: Color(0xb2008E99)),
+                    decoration: TextDecoration.underline,
+                    fontFamily: 'Almarai',
+                    fontSize: 13.sp,
+                    fontWeight: FontWeight.w700,
+                    color: AppColors.green,
+                  ),
                 ),
               ),
               title: 'قناة الواتساب',
@@ -142,11 +153,12 @@ class CommunicationPage extends StatelessWidget {
                 child: Text(
                   'رابط الدخول للقناة',
                   style: TextStyle(
-                      decoration: TextDecoration.underline,
-                      fontFamily: 'Almarai',
-                      fontSize: 13.sp,
-                      fontWeight: FontWeight.w700,
-                      color: Color(0xb2008E99)),
+                    decoration: TextDecoration.underline,
+                    fontFamily: 'Almarai',
+                    fontSize: 13.sp,
+                    fontWeight: FontWeight.w700,
+                    color: AppColors.green,
+                  ),
                 ),
               ),
               title: 'قناة التلغرام',
@@ -156,8 +168,9 @@ class CommunicationPage extends StatelessWidget {
               content: GestureDetector(
                 onTap: () {
                   try {
-                    launchUrl(Uri.parse(
-                        'https://www.facebook.com/share/16XDMaaFjb/'));
+                    launchUrl(
+                      Uri.parse('https://www.facebook.com/share/16XDMaaFjb/'),
+                    );
                   } catch (e) {
                     ToastContext().init(context);
                     Toast.show('حصل خطأ غير متوقع', duration: Toast.lengthLong);
@@ -166,11 +179,12 @@ class CommunicationPage extends StatelessWidget {
                 child: Text(
                   'رابط الصفحة',
                   style: TextStyle(
-                      decoration: TextDecoration.underline,
-                      fontFamily: 'Almarai',
-                      fontSize: 13.sp,
-                      fontWeight: FontWeight.w700,
-                      color: Color(0xb2008E99)),
+                    decoration: TextDecoration.underline,
+                    fontFamily: 'Almarai',
+                    fontSize: 13.sp,
+                    fontWeight: FontWeight.w700,
+                    color: AppColors.green,
+                  ),
                 ),
               ),
               title: 'صفحة الفيسبوك',
@@ -180,8 +194,11 @@ class CommunicationPage extends StatelessWidget {
               content: GestureDetector(
                 onTap: () {
                   try {
-                    launchUrl(Uri.parse(
-                        'https://www.instagram.com/alemam.abo.hanfa?igsh=YnppZGxpNmFxY2tm'));
+                    launchUrl(
+                      Uri.parse(
+                        'https://www.instagram.com/alemam.abo.hanfa?igsh=YnppZGxpNmFxY2tm',
+                      ),
+                    );
                   } catch (e) {
                     ToastContext().init(context);
                     Toast.show('حصل خطأ غير متوقع', duration: Toast.lengthLong);
@@ -190,11 +207,12 @@ class CommunicationPage extends StatelessWidget {
                 child: Text(
                   'رابط الصفحة',
                   style: TextStyle(
-                      decoration: TextDecoration.underline,
-                      fontFamily: 'Almarai',
-                      fontSize: 13.sp,
-                      fontWeight: FontWeight.w700,
-                      color: Color(0xb2008E99)),
+                    decoration: TextDecoration.underline,
+                    fontFamily: 'Almarai',
+                    fontSize: 13.sp,
+                    fontWeight: FontWeight.w700,
+                    color: AppColors.green,
+                  ),
                 ),
               ),
               title: 'صفحة الانستغرام',
@@ -205,7 +223,8 @@ class CommunicationPage extends StatelessWidget {
                 onTap: () {
                   try {
                     launchUrl(
-                        Uri.parse('https://m.youtube.com/@alemam.abo.hanfa'));
+                      Uri.parse('https://m.youtube.com/@alemam.abo.hanfa'),
+                    );
                   } catch (e) {
                     ToastContext().init(context);
                     Toast.show('حصل خطأ غير متوقع', duration: Toast.lengthLong);
@@ -214,11 +233,12 @@ class CommunicationPage extends StatelessWidget {
                 child: Text(
                   'رابط الصفحة',
                   style: TextStyle(
-                      decoration: TextDecoration.underline,
-                      fontFamily: 'Almarai',
-                      fontSize: 13.sp,
-                      fontWeight: FontWeight.w700,
-                      color: Color(0xb2008E99)),
+                    decoration: TextDecoration.underline,
+                    fontFamily: 'Almarai',
+                    fontSize: 13.sp,
+                    fontWeight: FontWeight.w700,
+                    color: AppColors.green,
+                  ),
                 ),
               ),
               title: 'قناة اليوتيوب',
@@ -234,8 +254,11 @@ class CommunicationPage extends StatelessWidget {
 class CommunicationPageContainer extends StatelessWidget {
   final String title;
   final Widget content;
-  const CommunicationPageContainer(
-      {super.key, required this.content, required this.title});
+  const CommunicationPageContainer({
+    super.key,
+    required this.content,
+    required this.title,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -245,9 +268,7 @@ class CommunicationPageContainer extends StatelessWidget {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(20.sp),
-        boxShadow: [
-          BoxShadow(color: Color(0x19000000), blurRadius: 7.1.sp),
-        ],
+        boxShadow: [BoxShadow(color: Color(0x19000000), blurRadius: 7.1.sp)],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.end,
@@ -255,13 +276,14 @@ class CommunicationPageContainer extends StatelessWidget {
           Text(
             title,
             style: TextStyle(
-                color: AppColors.darkBrownColor,
-                fontFamily: 'Almarai',
-                fontWeight: FontWeight.w700,
-                fontSize: 16.sp),
+              color: AppColors.darkBrownColor,
+              fontFamily: 'Almarai',
+              fontWeight: FontWeight.w700,
+              fontSize: 16.sp,
+            ),
           ),
           SizedBox(height: 17.h),
-          content
+          content,
         ],
       ),
     );

@@ -14,8 +14,10 @@ import '../models/file_collection.dart';
 import '../widgets/drawer.dart';
 import '../widgets/home_page_app_bar.dart';
 import '../widgets/widgets.dart';
+import 'add_student_prays_page.dart';
 import 'collection_content.dart';
 import 'communication_page.dart';
+import 'student_institute_actions_page.dart';
 
 class CoursesPage extends StatefulWidget {
   final List courses;
@@ -77,6 +79,33 @@ class _LibraryPageState extends State<CoursesPage> {
                   }
                 },
                 text: 'التبرعات',
+              ),
+              DrawerItem(
+                onTap: () async {
+                  if (!Constant.isThereLoading) {
+                    _scaffoldKey.currentState?.closeEndDrawer();
+                    await Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) => const AddStudentPraysPage(),
+                      ),
+                    );
+                  }
+                },
+                text: 'إضافة الصلوات',
+              ),
+              DrawerItem(
+                onTap: () async {
+                  if (!Constant.isThereLoading) {
+                    _scaffoldKey.currentState?.closeEndDrawer();
+                    await Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) =>
+                            const StudentInstituteActionsPage(),
+                      ),
+                    );
+                  }
+                },
+                text: 'نشاطات المعهد',
               ),
               DrawerItem(
                 onTap: () async {

@@ -16,8 +16,10 @@ import '../widgets/home_page_app_bar.dart';
 import '../widgets/monthly_progress_container.dart';
 import '../widgets/student_daily_track_date_container.dart';
 import '../widgets/widgets.dart';
+import 'add_student_prays_page.dart';
 import 'communication_page.dart';
 import 'login_required_page.dart';
+import 'student_institute_actions_page.dart';
 
 class StudentDailyTrackPage extends StatefulWidget {
   final List studentDailyTrack;
@@ -70,6 +72,32 @@ class _StudentDailyTrackPageState extends State<StudentDailyTrackPage> {
               }
             },
             text: 'التبرعات',
+          ),
+          DrawerItem(
+            onTap: () async {
+              if (!Constant.isThereLoading) {
+                _scaffoldKey.currentState?.closeEndDrawer();
+                await Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => const AddStudentPraysPage(),
+                  ),
+                );
+              }
+            },
+            text: 'إضافة الصلوات',
+          ),
+          DrawerItem(
+            onTap: () async {
+              if (!Constant.isThereLoading) {
+                _scaffoldKey.currentState?.closeEndDrawer();
+                await Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => const StudentInstituteActionsPage(),
+                  ),
+                );
+              }
+            },
+            text: 'نشاطات المعهد',
           ),
           DrawerItem(
             onTap: () async {
@@ -193,9 +221,11 @@ class _StudentDailyTrackPageState extends State<StudentDailyTrackPage> {
                                                           ? 5
                                                           : 20.h,
                                                     ),
-                                                    isWeaklyTrack
-                                                        ? SizedBox.shrink()
-                                                        : Container(
+                                                    !isWeaklyTrack &&
+                                                            studentTrackModel!
+                                                                .quranProject
+                                                                .isNotEmpty
+                                                        ? Container(
                                                             alignment: Alignment
                                                                 .center,
                                                             width: 291.w,
@@ -221,15 +251,22 @@ class _StudentDailyTrackPageState extends State<StudentDailyTrackPage> {
                                                                         .w700,
                                                               ),
                                                             ),
-                                                          ),
+                                                          )
+                                                        : SizedBox.shrink(),
                                                     SizedBox(
-                                                      height: isWeaklyTrack
-                                                          ? 0
-                                                          : 8.h,
+                                                      height:
+                                                          !isWeaklyTrack &&
+                                                              studentTrackModel!
+                                                                  .quranProject
+                                                                  .isNotEmpty
+                                                          ? 8.h
+                                                          : 0,
                                                     ),
-                                                    isWeaklyTrack
-                                                        ? SizedBox.shrink()
-                                                        : Container(
+                                                    !isWeaklyTrack &&
+                                                            studentTrackModel!
+                                                                .quranProject
+                                                                .isNotEmpty
+                                                        ? Container(
                                                             width: 291.w,
                                                             height: 45.h,
                                                             alignment: Alignment
@@ -280,11 +317,16 @@ class _StudentDailyTrackPageState extends State<StudentDailyTrackPage> {
                                                                         .w700,
                                                               ),
                                                             ),
-                                                          ),
+                                                          )
+                                                        : SizedBox.shrink(),
                                                     SizedBox(
-                                                      height: isWeaklyTrack
-                                                          ? 0
-                                                          : 15.h,
+                                                      height:
+                                                          !isWeaklyTrack &&
+                                                              studentTrackModel!
+                                                                  .quranProject
+                                                                  .isNotEmpty
+                                                          ? 15.h
+                                                          : 0,
                                                     ),
                                                     MonthlyProgressContainer(
                                                       width: 291.w,
@@ -295,29 +337,50 @@ class _StudentDailyTrackPageState extends State<StudentDailyTrackPage> {
                                                       prefixText: 'عدد الصفحات',
                                                     ),
                                                     SizedBox(height: 15.h),
-                                                    MonthlyProgressContainer(
-                                                      width: 291.w,
-                                                      data: studentTrackModel!
-                                                          .quranVocabProgress,
-                                                      title:
-                                                          'مشروع أفلا يتدبرون القرآن',
-                                                      prefixItemText: 'مفردة',
-
-                                                      prefixText:
-                                                          'عدد المفردات',
-                                                    ),
-                                                    SizedBox(height: 15.h),
-                                                    MonthlyProgressContainer(
-                                                      width: 291.w,
-                                                      data: studentTrackModel!
-                                                          .hadithProgress,
-                                                      prefixItemText: 'حديث',
-                                                      prefixText:
-                                                          'عدد الأحاديث',
-                                                      title:
-                                                          'مشروع نضر الله امرأ سمع منا حديثا فبلغه',
-                                                    ),
-                                                    SizedBox(height: 15.h),
+                                                    studentTrackModel!
+                                                            .quranVocabProgress
+                                                            .isEmpty
+                                                        ? SizedBox.shrink()
+                                                        : Column(
+                                                            children: [
+                                                              MonthlyProgressContainer(
+                                                                width: 291.w,
+                                                                data: studentTrackModel!
+                                                                    .quranVocabProgress,
+                                                                title:
+                                                                    'مشروع أفلا يتدبرون القرآن',
+                                                                prefixItemText:
+                                                                    'مفردة',
+                                                                prefixText:
+                                                                    'عدد المفردات',
+                                                              ),
+                                                              SizedBox(
+                                                                height: 15.h,
+                                                              ),
+                                                            ],
+                                                          ),
+                                                    studentTrackModel!
+                                                            .hadithProgress
+                                                            .isEmpty
+                                                        ? SizedBox.shrink()
+                                                        : Column(
+                                                            children: [
+                                                              MonthlyProgressContainer(
+                                                                width: 291.w,
+                                                                data: studentTrackModel!
+                                                                    .hadithProgress,
+                                                                prefixItemText:
+                                                                    'حديث',
+                                                                prefixText:
+                                                                    'عدد الأحاديث',
+                                                                title:
+                                                                    'مشروع نضر الله امرأ سمع منا حديثا فبلغه',
+                                                              ),
+                                                              SizedBox(
+                                                                height: 15.h,
+                                                              ),
+                                                            ],
+                                                          ),
                                                     Container(
                                                       alignment:
                                                           Alignment.center,
@@ -332,7 +395,7 @@ class _StudentDailyTrackPageState extends State<StudentDailyTrackPage> {
                                                             .appBarColor,
                                                       ),
                                                       child: Text(
-                                                        'السلوك',
+                                                        'النقاط',
                                                         style: TextStyle(
                                                           color: AppColors
                                                               .lightBrownColor,
@@ -376,7 +439,7 @@ class _StudentDailyTrackPageState extends State<StudentDailyTrackPage> {
                                                         children: [
                                                           Text(
                                                             studentTrackModel!
-                                                                .behave
+                                                                .pointsCount
                                                                 .toString(),
                                                             textAlign:
                                                                 TextAlign.end,
@@ -396,7 +459,7 @@ class _StudentDailyTrackPageState extends State<StudentDailyTrackPage> {
                                                           ),
                                                           Spacer(),
                                                           Text(
-                                                            'السلوك',
+                                                            'النقاط',
                                                             textAlign:
                                                                 TextAlign.end,
                                                             overflow:
@@ -688,8 +751,13 @@ class _StudentDailyTrackPageState extends State<StudentDailyTrackPage> {
                                         withoutOrder: 0,
                                         quranProject: '',
                                         nots: '',
-                                        behave: widget
-                                            .studentWeaklyProgress['behave'],
+                                        behave: 0,
+                                        pointsCount:
+                                            widget
+                                                .studentWeaklyProgress['points_count'] ??
+                                            widget
+                                                .studentWeaklyProgress['pointsCount'] ??
+                                            0,
                                         quranQuizCount:
                                             widget
                                                 .studentWeaklyProgress['quranQuizCount'] ??
@@ -701,24 +769,14 @@ class _StudentDailyTrackPageState extends State<StudentDailyTrackPage> {
                                         quranProgress: [
                                           Progress(
                                             name: '',
-                                            pagesNum: widget
-                                                .studentWeaklyProgress['quranNewPagesCount'],
+                                            pagesNum:
+                                                widget
+                                                    .studentWeaklyProgress['quranNewPagesCount'] ??
+                                                0,
                                           ),
                                         ],
-                                        hadithProgress: [
-                                          Progress(
-                                            name: '',
-                                            pagesNum: widget
-                                                .studentWeaklyProgress['hadithNewPagesCount'],
-                                          ),
-                                        ],
-                                        quranVocabProgress: [
-                                          Progress(
-                                            name: '',
-                                            pagesNum: widget
-                                                .studentWeaklyProgress['quranVocabPagesCount'],
-                                          ),
-                                        ],
+                                        hadithProgress: [],
+                                        quranVocabProgress: [],
                                         className: '',
                                       );
                                     }

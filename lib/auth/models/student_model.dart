@@ -79,23 +79,25 @@ class StudentModel {
   });
   factory StudentModel.fromMap(Map<String, dynamic> data) {
     return StudentModel(
-      id: data['id'],
-      fName: data['fName'],
-      lName: data['lName'],
-      donations: data['donation'].toString(),
+      id: data['id'] is int
+          ? data['id']
+          : int.tryParse(data['id']?.toString() ?? '') ?? 0,
+      fName: _stringValue(data['fName']),
+      lName: _stringValue(data['lName']),
+      donations: _stringValue(data['donation']),
       address: data['address'] ?? '',
-      bornPlace: data['bornPlace'],
-      fatherName: data['fatherName'],
+      bornPlace: _stringValue(data['bornPlace']),
+      fatherName: _stringValue(data['fatherName']),
       fatherPhoneNumber: data['fatherPhoneNumber'] ?? '',
       fatherStudy: data['fatherStudy'] ?? '',
       fatherWhatsNumber: data['fatherWhatsAppNumber'] ?? '',
       fatherWork: data['fatherWork'] ?? "",
       homeNumber: data['homeNumber'] ?? '',
-      isStudent: data['isStudent'] == 1 ? true : false,
+      isStudent: data['isStudent'] == true || data['isStudent'] == 1,
       lastInstitutes: data['institutes'] ?? [],
       mobileNumber: data['mobileNumber'] ?? "",
-      motherFName: data['motherFName'],
-      motherLName: data['motherLName'],
+      motherFName: _stringValue(data['motherFName']),
+      motherLName: _stringValue(data['motherLName']),
       motherPhoneNumber: data['motherPhoneNumber'] ?? '',
       motherStudy: data['motherStudy'] ?? '',
       motherWhatsNumber: data['motherWhatsAppNumber'] ?? '',
@@ -103,21 +105,28 @@ class StudentModel {
       nots: data['nots'] ?? '',
       progressInInstitute: data['progressInInstitute'] ?? '',
       schoolName: data['schoolName'] ?? "",
-      startDate: data['startDate'],
+      startDate: _stringValue(data['startDate']),
       endDate: data['endDate'],
-      birthDay: data['birthDay'],
-      studentStatues: data['statues'],
+      birthDay: _stringValue(data['birthDay']),
+      studentStatues: _stringValue(data['statues']),
       studyLevel: data['studyLevel'] ?? '',
       className: data['className'] ?? '',
       classSubject: data['classSubject'] ?? '',
       teachers: data['teachers'] ?? '',
-      rankYear: data['rankYear'].toString(),
-      rankMonth: data['rankMonth'].toString(),
-      rankLevel: data['rankLevel'].toString(),
-      rankScore: data['rankScore'].toString(),
-      classStudentCount: data['classStudentCount'].toString(),
+      rankYear: _nullableStringValue(data['rankYear']),
+      rankMonth: _nullableStringValue(data['rankMonth']),
+      rankLevel: _nullableStringValue(data['rankLevel']),
+      rankScore: _nullableStringValue(data['rankScore']),
+      classStudentCount: _nullableStringValue(data['classStudentCount']),
     );
   }
+
+  static String _stringValue(dynamic value) => value?.toString() ?? '';
+
+  static String? _nullableStringValue(dynamic value) {
+    return value == null ? null : value.toString();
+  }
+
   Map<String, dynamic> toMap() {
     return {
       'id': id,

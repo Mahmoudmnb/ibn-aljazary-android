@@ -53,7 +53,7 @@ class AuthForm extends StatelessWidget {
                   ),
                   SizedBox(height: 10.h),
                   CustomTextField(
-                    backgroundColor: Color(0xffFCF9F2),
+                    backgroundColor: AppColors.white,
                     focusNode: emailNode,
                     boxShadow: const [
                       BoxShadow(
@@ -94,7 +94,7 @@ class AuthForm extends StatelessWidget {
                   ),
                   SizedBox(height: 10.h),
                   PasswordTextField(
-                    backgroundColor: Color(0xffFCF9F2),
+                    backgroundColor: AppColors.white,
                     color: AppColors.darkBrownColor,
                     focusNode: passwordNode,
                     controller: passwordCon,
@@ -115,7 +115,7 @@ class AuthForm extends StatelessWidget {
                   ),
                   SizedBox(height: 10.h),
                   CustomTextField(
-                    backgroundColor: Color(0xffFCF9F2),
+                    backgroundColor: AppColors.white,
                     focusNode: idNode,
                     validator: (p0) {
                       if (p0!.isEmpty) {
@@ -146,7 +146,7 @@ class AuthForm extends StatelessWidget {
             ),
             SizedBox(height: 20.h),
             LoginButton(
-              textColor: Color(0xffFFFEFC),
+              textColor: AppColors.white,
               text: 'تسجيل الدخول',
               boxShadow: const [
                 BoxShadow(

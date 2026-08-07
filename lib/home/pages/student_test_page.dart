@@ -114,7 +114,7 @@ class _StudentTestPageState extends State<StudentTestPage> {
                             title: widget.testType == 'أوقاف'
                                 ? ' ${index + 1} السبر'
                                 : widget.testType == 'محلي'
-                                ? ' ${index + 1} الإختبار'
+                                ? ' ${index + 1} الاختبار'
                                 : ' ${index + 1} الامتحان',
                           ),
                         );

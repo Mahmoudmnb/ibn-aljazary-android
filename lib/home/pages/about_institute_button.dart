@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+import '../../core/app_colors.dart';
+
 class AboutInstituteButton extends StatefulWidget {
   final Future Function() ontTap;
   const AboutInstituteButton({super.key, required this.ontTap});
@@ -25,25 +27,22 @@ class _AboutInstituteButtonState extends State<AboutInstituteButton> {
         width: 275.w,
         height: 69.h,
         decoration: BoxDecoration(
-          color: const Color(0xb2008E99),
+          color: AppColors.green,
           borderRadius: BorderRadius.circular(16.sp),
         ),
         child: isLoading
-            ? Center(
-                child: CircularProgressIndicator(
-                  color: Colors.white,
-                ),
-              )
+            ? Center(child: CircularProgressIndicator(color: Colors.white))
             : Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   Text(
                     'نبذة عن المعهد',
                     style: TextStyle(
-                        color: Colors.white,
-                        fontFamily: 'Almarai',
-                        fontSize: 16.sp,
-                        fontWeight: FontWeight.w700),
+                      color: Colors.white,
+                      fontFamily: 'Almarai',
+                      fontSize: 16.sp,
+                      fontWeight: FontWeight.w700,
+                    ),
                   ),
                   SizedBox(width: 18.w),
                   Container(
@@ -51,7 +50,7 @@ class _AboutInstituteButtonState extends State<AboutInstituteButton> {
                     width: 3,
                     margin: EdgeInsets.symmetric(horizontal: 14.w),
                     decoration: const BoxDecoration(color: Colors.white),
-                  )
+                  ),
                 ],
               ),
       ),

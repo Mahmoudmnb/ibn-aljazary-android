@@ -88,7 +88,7 @@ class _MonthlyProgressContainer extends State<MonthlyProgressContainer> {
                             ),
                       Expanded(
                         child: Text(
-                          '${widget.prefixText}  ${pagesCount}',
+                          '${widget.prefixText}  $pagesCount',
                           textAlign: TextAlign.end,
                           overflow: TextOverflow.ellipsis,
                           style: TextStyle(
@@ -135,7 +135,7 @@ class _MonthlyProgressContainer extends State<MonthlyProgressContainer> {
                           SizedBox(
                             width: 170.w,
                             child: Text(
-                              '${widget.data[index].name}',
+                              widget.data[index].name,
                               overflow: TextOverflow.ellipsis,
                               style: TextStyle(
                                 color: AppColors.greyBrownColor,

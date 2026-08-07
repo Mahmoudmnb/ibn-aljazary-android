@@ -35,7 +35,7 @@ class _StudentDonationPageState extends State<StudentDonationPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xffF9F9F9),
+      backgroundColor: AppColors.brownBackgroundColor,
       body: Column(
         children: [
           DataPagesAppBar(

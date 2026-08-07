@@ -1,0 +1,154 @@
+{
+  "project_info": {
+    "project_number": "836241462612",
+    "project_id": "aaaaa-e6da8",
+    "storage_bucket": "aaaaa-e6da8.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:836241462612:android:5235bb0eea853c80df64c1",
+        "android_client_info": {
+          "package_name": "com.brothers.alsaad_mosque_institute"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "836241462612-tgctqm7n55oar3sgmufu9qio0drd2ph1.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBQ5sFD8mxTFhLzRIpk8RIvkym1vswEvbY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "836241462612-tgctqm7n55oar3sgmufu9qio0drd2ph1.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "836241462612-ivuss2mhbb1n4mbbl2s2lrfqabkbpkvt.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.beroCode"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:836241462612:android:be42c07f5e9d2ce1df64c1",
+        "android_client_info": {
+          "package_name": "com.example.abihanifa_android"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "836241462612-tgctqm7n55oar3sgmufu9qio0drd2ph1.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBQ5sFD8mxTFhLzRIpk8RIvkym1vswEvbY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "836241462612-tgctqm7n55oar3sgmufu9qio0drd2ph1.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "836241462612-ivuss2mhbb1n4mbbl2s2lrfqabkbpkvt.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.beroCode"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:836241462612:android:4489944df0cf7195df64c1",
+        "android_client_info": {
+          "package_name": "com.example.alssad_android"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "836241462612-tgctqm7n55oar3sgmufu9qio0drd2ph1.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBQ5sFD8mxTFhLzRIpk8RIvkym1vswEvbY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "836241462612-tgctqm7n55oar3sgmufu9qio0drd2ph1.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "836241462612-ivuss2mhbb1n4mbbl2s2lrfqabkbpkvt.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.beroCode"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:836241462612:android:644f19f6ec444575df64c1",
+        "android_client_info": {
+          "package_name": "com.example.ibnaljazari_android"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "836241462612-tgctqm7n55oar3sgmufu9qio0drd2ph1.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBQ5sFD8mxTFhLzRIpk8RIvkym1vswEvbY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "836241462612-tgctqm7n55oar3sgmufu9qio0drd2ph1.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "836241462612-ivuss2mhbb1n4mbbl2s2lrfqabkbpkvt.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.beroCode"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -7,6 +7,7 @@ class StudentDailyTrackModel {
   final int withOrder;
   final int withoutOrder;
   final int behave;
+  final int pointsCount;
   final int quranQuizCount;
   final int hadithQuizCount;
   final String quranProject;
@@ -21,6 +22,7 @@ class StudentDailyTrackModel {
     required this.withOrder,
     required this.withoutOrder,
     required this.behave,
+    required this.pointsCount,
     required this.quranQuizCount,
     required this.hadithQuizCount,
     required this.quranProgress,
@@ -38,39 +40,67 @@ class StudentDailyTrackModel {
 
   factory StudentDailyTrackModel.fromJson(Map<String, dynamic> json) =>
       StudentDailyTrackModel(
-        quranProject: json['quranProjectName'],
-        nots: json['nots'] ?? '',
-        date: DateTime.parse(json["trackDate"]),
-        withOrder: json["withOrder"],
-        withoutOrder: json["withoutOrder"],
-        behave: json["behave"] ?? 0,
-        quranQuizCount: json["quranQuizCount"] ?? 0,
-        hadithQuizCount: json["hadithQuizCount"] ?? 0,
-        quranVocabProgress: List<Progress>.from(
-            json["quranVocabProgress"].map((x) => Progress.fromJson(x))),
-        quranProgress: List<Progress>.from(
-            json["quranProgress"].map((x) => Progress.fromJson(x))),
-        hadithProgress: List<Progress>.from(
-            json["hadithProgress"].map((x) => Progress.fromJson(x))),
-        className: json["classMateName"] ?? '',
+        quranProject: _stringValue(json['quranProjectName']),
+        nots: _stringValue(json['nots']),
+        date: _dateValue(json["trackDate"]),
+        withOrder: _boolIntValue(json["withOrder"]),
+        withoutOrder: _boolIntValue(json["withoutOrder"]),
+        behave: _intValue(json["behave"]),
+        pointsCount: _intValue(json["points_count"] ?? json["pointsCount"]),
+        quranQuizCount: _intValue(json["quranQuizCount"]),
+        hadithQuizCount: _intValue(json["hadithQuizCount"]),
+        quranVocabProgress: _progressList(json["quranVocabProgress"]),
+        quranProgress: _progressList(json["quranProgress"]),
+        hadithProgress: _progressList(json["hadithProgress"]),
+        className: _stringValue(json["classMateName"]),
       );
 
+  static List<Progress> _progressList(dynamic value) {
+    if (value is! List) {
+      return [];
+    }
+    return value
+        .whereType<Map>()
+        .map((x) => Progress.fromJson(Map<String, dynamic>.from(x)))
+        .toList();
+  }
+
+  static int _boolIntValue(dynamic value) {
+    return value == true || value == 1 || value == '1' ? 1 : 0;
+  }
+
+  static int _intValue(dynamic value) {
+    if (value is int) {
+      return value;
+    }
+    if (value is num) {
+      return value.toInt();
+    }
+    return int.tryParse(value?.toString() ?? '') ?? 0;
+  }
+
+  static DateTime _dateValue(dynamic value) {
+    return DateTime.tryParse(value?.toString() ?? '') ?? DateTime.now();
+  }
+
+  static String _stringValue(dynamic value) => value?.toString() ?? '';
+
   Map<String, dynamic> toJson() => {
-        'nots': nots,
-        "date":
-            "${date.year.toString().padLeft(4, '0')}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}",
-        "withOrder": withOrder,
-        "withoutOrder": withoutOrder,
-        "behave": behave,
-        "quranQuizCount": quranQuizCount,
-        "hadithQuizCount": hadithQuizCount,
-        "quranProgress":
-            List<dynamic>.from(quranProgress.map((x) => x.toJson())),
-        "hadithProgress":
-            List<dynamic>.from(hadithProgress.map((x) => x.toJson())),
-        "quranVocabProgress":
-            List<dynamic>.from(quranVocabProgress.map((x) => x.toJson())),
-        "classMateName": className,
-        "quranProjectName": quranProject,
-      };
+    'nots': nots,
+    "date":
+        "${date.year.toString().padLeft(4, '0')}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}",
+    "withOrder": withOrder,
+    "withoutOrder": withoutOrder,
+    "behave": behave,
+    "points_count": pointsCount,
+    "quranQuizCount": quranQuizCount,
+    "hadithQuizCount": hadithQuizCount,
+    "quranProgress": List<dynamic>.from(quranProgress.map((x) => x.toJson())),
+    "hadithProgress": List<dynamic>.from(hadithProgress.map((x) => x.toJson())),
+    "quranVocabProgress": List<dynamic>.from(
+      quranVocabProgress.map((x) => x.toJson()),
+    ),
+    "classMateName": className,
+    "quranProjectName": quranProject,
+  };
 }

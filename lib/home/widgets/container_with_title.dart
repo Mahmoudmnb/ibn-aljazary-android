@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+import '../../core/app_colors.dart';
+
 class ContainerWithTitle extends StatelessWidget {
   final String title;
   final String content;
@@ -21,14 +23,10 @@ class ContainerWithTitle extends StatelessWidget {
     return Container(
       width: width.w,
       decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(16.sp),
-          boxShadow: const [
-            BoxShadow(
-              color: Color(0x19000000),
-              blurRadius: 7.1,
-            ),
-          ]),
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16.sp),
+        boxShadow: const [BoxShadow(color: Color(0x19000000), blurRadius: 7.1)],
+      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
@@ -43,10 +41,11 @@ class ContainerWithTitle extends StatelessWidget {
               title,
               textDirection: TextDirection.rtl,
               style: TextStyle(
-                  fontSize: 14.sp,
-                  fontFamily: 'Almarai',
-                  fontWeight: FontWeight.w700,
-                  color: titleTextColor),
+                fontSize: 14.sp,
+                fontFamily: 'Almarai',
+                fontWeight: FontWeight.w700,
+                color: titleTextColor,
+              ),
             ),
           ),
           Padding(
@@ -55,11 +54,12 @@ class ContainerWithTitle extends StatelessWidget {
               content,
               textDirection: TextDirection.rtl,
               style: TextStyle(
-                  fontSize: 14.sp,
-                  fontFamily: 'Almarai',
-                  color: const Color(0xff30727C)),
+                fontSize: 14.sp,
+                fontFamily: 'Almarai',
+                color: AppColors.green,
+              ),
             ),
-          )
+          ),
         ],
       ),
     );

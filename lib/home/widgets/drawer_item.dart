@@ -38,8 +38,13 @@ class _DrawerItemState extends State<DrawerItem> {
       onTap: () async {
         if (!isLoading) {
           isLoading = true;
-          setState(() {});
+          if (mounted) {
+            setState(() {});
+          }
           await widget.onTap();
+          if (!mounted) {
+            return;
+          }
           isLoading = false;
           setState(() {});
         }

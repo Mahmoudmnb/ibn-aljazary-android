@@ -42,7 +42,7 @@ class ExpandedMenuItem extends StatelessWidget {
         width: width,
         height: height == 0 ? height : null,
         decoration: BoxDecoration(
-          color: isItemSelected ? AppColors.brownColor : Color(0xffEBE4E0),
+          color: isItemSelected ? AppColors.brownColor : AppColors.appBarColor,
           borderRadius: BorderRadius.circular(16.sp),
         ),
         margin: EdgeInsets.only(bottom: bottomMargin),

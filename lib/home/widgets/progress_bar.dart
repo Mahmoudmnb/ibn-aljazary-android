@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+import '../../core/app_colors.dart';
+
 class ProgressBar extends StatelessWidget {
   final double maxValue;
   final double value;
@@ -56,10 +58,11 @@ class ProgressBar extends StatelessWidget {
                   textDirection: TextDirection.rtl,
                   overflow: TextOverflow.ellipsis,
                   style: TextStyle(
-                      color: const Color(0xff30727C),
-                      fontFamily: 'Almarai',
-                      // fontSize: 14.sp,
-                      fontWeight: FontWeight.w700),
+                    color: AppColors.green,
+                    fontFamily: 'Almarai',
+                    // fontSize: 14.sp,
+                    fontWeight: FontWeight.w700,
+                  ),
                 ),
                 // const Spacer(),
                 Expanded(
@@ -69,15 +72,16 @@ class ProgressBar extends StatelessWidget {
                     overflow: TextOverflow.ellipsis,
                     textDirection: TextDirection.rtl,
                     style: TextStyle(
-                        color: const Color(0xff30727C),
-                        fontFamily: 'Almarai',
-                        // fontSize: 14.sp,
-                        fontWeight: FontWeight.w700),
+                      color: AppColors.green,
+                      fontFamily: 'Almarai',
+                      // fontSize: 14.sp,
+                      fontWeight: FontWeight.w700,
+                    ),
                   ),
-                )
+                ),
               ],
             ),
-          )
+          ),
         ],
       ),
     );

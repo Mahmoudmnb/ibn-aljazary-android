@@ -20,8 +20,10 @@ import '../widgets/drawer.dart';
 import '../widgets/home_page_app_bar.dart';
 import '../widgets/widgets.dart';
 import 'about_institute.dart';
+import 'add_student_prays_page.dart';
 import 'communication_page.dart';
 import 'login_required_page.dart';
+import 'student_institute_actions_page.dart';
 
 class HomePage extends StatefulWidget {
   final PageController pageController;
@@ -51,7 +53,7 @@ class _HomePageState extends State<HomePage> {
   void didUpdateWidget(covariant HomePage oldWidget) {
     try {
       getImages = getAdvertingImages();
-    } catch (e) {}
+    } catch (_) {}
     super.didUpdateWidget(oldWidget);
   }
 
@@ -184,6 +186,33 @@ class _HomePageState extends State<HomePage> {
                   }
                 },
                 text: 'التبرعات',
+              ),
+              DrawerItem(
+                onTap: () async {
+                  if (!Constant.isThereLoading) {
+                    _scaffoldKey.currentState?.closeEndDrawer();
+                    await Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) => const AddStudentPraysPage(),
+                      ),
+                    );
+                  }
+                },
+                text: 'إضافة الصلوات',
+              ),
+              DrawerItem(
+                onTap: () async {
+                  if (!Constant.isThereLoading) {
+                    _scaffoldKey.currentState?.closeEndDrawer();
+                    await Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) =>
+                            const StudentInstituteActionsPage(),
+                      ),
+                    );
+                  }
+                },
+                text: 'نشاطات المعهد',
               ),
               DrawerItem(
                 onTap: () async {
@@ -515,7 +544,7 @@ class _HomePageState extends State<HomePage> {
                                       height: 55.h,
                                       isLoading: isLoading,
                                       iconData: Mnb.task_square,
-                                      backgroundColor: Color(0xffA58774),
+                                      backgroundColor: AppColors.green2,
                                       onTap: () async {
                                         if (!Constant.isThereLoading) {
                                           Constant.isThereLoading = true;
@@ -558,7 +587,7 @@ class _HomePageState extends State<HomePage> {
                                       width: 60.w,
                                       height: 60.h,
                                       iconData: Mnb.award,
-                                      backgroundColor: Color(0xffA58774),
+                                      backgroundColor: AppColors.green2,
                                       isLoading: isLoading,
                                       onTap: () async {
                                         if (!Constant.isThereLoading) {
@@ -602,7 +631,7 @@ class _HomePageState extends State<HomePage> {
                                       height: 60.h,
                                       isLoading: isLoading,
                                       iconData: Mnb.teacher,
-                                      backgroundColor: Color(0xffA58774),
+                                      backgroundColor: AppColors.green2,
                                       onTap: () async {
                                         if (!Constant.isThereLoading) {
                                           Constant.isThereLoading = true;
@@ -647,7 +676,7 @@ class _HomePageState extends State<HomePage> {
                                       height: 60.h,
                                       iconData: Mnb.medal,
                                       isLoading: isLoading,
-                                      backgroundColor: Color(0xffA58774),
+                                      backgroundColor: AppColors.green2,
                                       onTap: () async {
                                         if (!Constant.isThereLoading) {
                                           Constant.isThereLoading = true;
@@ -688,7 +717,7 @@ class _HomePageState extends State<HomePage> {
                                       height: 60.h,
                                       isLoading: isLoading,
                                       iconData: Mnb.message,
-                                      backgroundColor: Color(0xffA58774),
+                                      backgroundColor: AppColors.green2,
                                       onTap: () async {
                                         if (!Constant.isThereLoading) {
                                           Constant.isThereLoading = true;
@@ -710,7 +739,7 @@ class _HomePageState extends State<HomePage> {
                                   width: 60.w,
                                   height: 60.h,
                                   iconData: Mnb.calendar,
-                                  backgroundColor: Color(0xffA58774),
+                                  backgroundColor: AppColors.green2,
                                   onTap: () async {
                                     if (!Constant.isThereLoading) {
                                       Constant.isThereLoading = true;

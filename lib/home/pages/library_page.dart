@@ -1,6 +1,5 @@
 import 'dart:developer';
 
-import 'package:abihanifa_android/home/widgets/drawer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -11,10 +10,13 @@ import '../../core/constant.dart';
 import '../../core/mnb_icons.dart';
 import '../methods/home_page_methods.dart';
 import '../models/file_collection.dart';
+import '../widgets/drawer.dart';
 import '../widgets/home_page_app_bar.dart';
 import '../widgets/widgets.dart';
+import 'add_student_prays_page.dart';
 import 'collection_content.dart';
 import 'communication_page.dart';
+import 'student_institute_actions_page.dart';
 
 class LibraryPage extends StatefulWidget {
   final List audios;
@@ -71,6 +73,32 @@ class _LibraryPageState extends State<LibraryPage> {
               }
             },
             text: 'التبرعات',
+          ),
+          DrawerItem(
+            onTap: () async {
+              if (!Constant.isThereLoading) {
+                _scaffoldKey.currentState?.closeEndDrawer();
+                await Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => const AddStudentPraysPage(),
+                  ),
+                );
+              }
+            },
+            text: 'إضافة الصلوات',
+          ),
+          DrawerItem(
+            onTap: () async {
+              if (!Constant.isThereLoading) {
+                _scaffoldKey.currentState?.closeEndDrawer();
+                await Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => const StudentInstituteActionsPage(),
+                  ),
+                );
+              }
+            },
+            text: 'نشاطات المعهد',
           ),
           DrawerItem(
             onTap: () async {

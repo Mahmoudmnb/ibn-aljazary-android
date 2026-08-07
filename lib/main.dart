@@ -12,6 +12,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'auth/methods/auth_page_methods.dart';
 import 'auth/models/student_model.dart';
 import 'auth/pages/splash_screen.dart';
+import 'core/app_background.dart';
 import 'core/app_colors.dart';
 import 'core/constant.dart';
 import 'firebase_options.dart';
@@ -20,7 +21,7 @@ import 'home/methods/home_page_methods.dart';
 import 'home/models/app_notification.dart';
 import 'home/pages/main_page.dart';
 
-Future handelMessageArrive(RemoteMessage message) async {
+Future<void> handelMessageArrive(RemoteMessage message) async {
   if (message.data['page'] == 'صوتيات' ||
       message.data['page'] == 'كتب' ||
       message.data['page'] == 'الدروس العلمية') {
@@ -51,24 +52,44 @@ void requestPermission() async {
   await messaging.requestPermission(alert: true, badge: true, sound: true);
 }
 
-// Handle background messages
-Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
-  await addNotification(
-    AppNotification(
-      body: message.notification?.body ?? '',
-      id: message.messageId.toString(),
-      title: message.notification?.title ?? '',
-    ),
-  );
-  handelMessageArrive(message);
+bool shouldShowNotification(RemoteMessage message) {
   if ((message.data['page'] == 'صوتيات' ||
           message.data['page'] == 'كتب' ||
           message.data['page'] == 'الدروس العلمية') &&
       (message.data['type'] != 'file' || message.data['method'] == 'delete')) {
-    //* don't show notification for collection methods or delete in files
-  } else {
-    await Firebase.initializeApp();
-    log("Background message: ${message.notification!.title}");
+    return false;
+  }
+
+  if (message.data['page'] == 'profile' && message.data['show'] == 'false') {
+    return false;
+  }
+
+  return true;
+}
+
+AppNotification appNotificationFromMessage(RemoteMessage message) {
+  return AppNotification(
+    body: message.notification?.body ?? message.data['body']?.toString() ?? '',
+    id:
+        message.messageId ??
+        message.data['id']?.toString() ??
+        DateTime.now().microsecondsSinceEpoch.toString(),
+    title:
+        message.notification?.title ?? message.data['title']?.toString() ?? '',
+  );
+}
+
+// Handle background messages
+@pragma('vm:entry-point')
+Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  await handelMessageArrive(message);
+
+  if (shouldShowNotification(message)) {
+    await addNotification(appNotificationFromMessage(message));
+    log(
+      "Background message: ${message.notification?.title ?? message.data['title'] ?? ''}",
+    );
   }
 }
 
@@ -79,7 +100,7 @@ void main() async {
   requestPermission();
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
   SharedPreferences sh = await SharedPreferences.getInstance();
-  Constant.notifications = ((await sh.getStringList('notifications')) ?? [])
+  Constant.notifications = ((sh.getStringList('notifications')) ?? [])
       .map((e) => AppNotification.fromMap(jsonDecode(e)))
       .toList();
   List tables = await getTablesNameInDataBase('usersDataBase.db');
@@ -87,7 +108,7 @@ void main() async {
     Constant.student = await getCurrentStudentAccount();
     Constant.studentsAccount = await getStudentsAccount();
   }
-  bool? res = await sh.getBool('isFirstTime');
+  bool? res = sh.getBool('isFirstTime');
   runApp(MyApp(student: Constant.student, isFirstTime: res == null));
 }
 
@@ -104,8 +125,11 @@ class MyApp extends StatelessWidget {
         title: 'مقرأة الإمام ابي حنيفة',
         theme: ThemeData(
           colorScheme: ColorScheme.fromSeed(seedColor: AppColors.brownColor),
+          scaffoldBackgroundColor: Colors.transparent,
           useMaterial3: true,
         ),
+        builder: (context, child) =>
+            AppBackground(child: child ?? const SizedBox.shrink()),
         debugShowCheckedModeBanner: false,
         home: ScreenUtilInit(
           designSize: const Size(323, 700),

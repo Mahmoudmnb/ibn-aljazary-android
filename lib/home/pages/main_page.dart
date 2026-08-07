@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
@@ -16,12 +17,12 @@ import '../../core/mnb_icons.dart';
 import '../../main.dart';
 import '../bloc/home_bloc.dart';
 import '../methods/home_page_methods.dart';
-import '../models/app_notification.dart';
 import '../widgets/widgets.dart';
 import 'courses_page.dart';
 import 'home_page.dart';
 import 'library_page.dart';
 import 'student_daily_track_page.dart';
+import 'student_institute_actions_page.dart';
 
 class MainPage extends StatefulWidget {
   final StudentModel? student;
@@ -37,27 +38,60 @@ class _MainPageState extends State<MainPage> {
   final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
   final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
       FlutterLocalNotificationsPlugin();
+  StreamSubscription<RemoteMessage>? _messageSubscription;
+  StreamSubscription<RemoteMessage>? _messageOpenedSubscription;
   List studentDailyTrack = [];
   Map studentWeaklyTrack = {};
   List books = [];
   List audios = [];
   List courses = [];
+  static const AndroidNotificationChannel _notificationChannel =
+      AndroidNotificationChannel(
+        'channelId',
+        'channelName',
+        importance: Importance.high,
+      );
+
+  Future<void> _switchStudentFromMessage(RemoteMessage message) async {
+    if (message.data['studentId'] == null) {
+      return;
+    }
+
+    List students = await getStudentsAccount();
+    for (var element in students) {
+      if (jsonDecode(element['data'])['id'].toString() ==
+          message.data['studentId'].toString()) {
+        Constant.student = StudentModel.fromMap(jsonDecode(element['data']));
+        await setCurrentUser(Constant.student!);
+        break;
+      }
+    }
+  }
+
+  int _notificationId(RemoteMessage message) {
+    final id = message.messageId ?? message.data['id']?.toString();
+    return id == null
+        ? DateTime.now().millisecondsSinceEpoch.remainder(2147483647)
+        : id.hashCode.abs().remainder(2147483647);
+  }
 
   handleMessageClick(RemoteMessage message) async {
-    await removeNotification(
-      AppNotification(
-        body: message.notification?.body ?? '',
-        id: message.messageId.toString(),
-        title: message.notification?.title ?? '',
-      ),
-    );
+    final notification = appNotificationFromMessage(message);
+    await removeNotification(notification);
     Constant.notifications.removeWhere(
-      (element) => element.id.toString() == message.messageId.toString(),
+      (element) => element.id.toString() == notification.id,
     );
     try {
+      await _switchStudentFromMessage(message);
+      if (!mounted) {
+        return;
+      }
+      final navigator = Navigator.of(context);
+      final homeBloc = context.read<HomeBloc>();
+
       for (;;) {
-        if (Navigator.of(context).canPop()) {
-          Navigator.of(context).pop();
+        if (navigator.canPop()) {
+          navigator.pop();
         } else {
           break;
         }
@@ -69,48 +103,54 @@ class _MainPageState extends State<MainPage> {
           duration: const Duration(milliseconds: 150),
           curve: Curves.linear,
         );
-        context.read<HomeBloc>().add(OpenAwqafTestPage(date: ''));
+        if (!mounted) return;
+        homeBloc.add(OpenAwqafTestPage(date: ''));
       } else if (message.data['page'] == 'محلي') {
         await pageController.animateToPage(
           0,
           duration: const Duration(milliseconds: 150),
           curve: Curves.linear,
         );
-        context.read<HomeBloc>().add(OpenLocalTestPage());
+        if (!mounted) return;
+        homeBloc.add(OpenLocalTestPage());
       } else if (message.data['page'] == 'منهج') {
         await pageController.animateToPage(
           0,
           duration: const Duration(milliseconds: 150),
           curve: Curves.linear,
         );
-        context.read<HomeBloc>().add(OpenCourseTestPage());
+        if (!mounted) return;
+        homeBloc.add(OpenCourseTestPage());
       } else if (message.data['page'] == 'شهادة') {
         await pageController.animateToPage(
           0,
           duration: const Duration(milliseconds: 150),
           curve: Curves.linear,
         );
-        context.read<HomeBloc>().add(OpenGradesPage());
+        if (!mounted) return;
+        homeBloc.add(OpenGradesPage());
       } else if (message.data['page'] == 'استدعاء') {
         await pageController.animateToPage(
           0,
           duration: const Duration(milliseconds: 150),
           curve: Curves.linear,
         );
-        context.read<HomeBloc>().add(OpenRecallsPage());
+        if (!mounted) return;
+        homeBloc.add(OpenRecallsPage());
       } else if (message.data['page'] == 'المتابعة اليومية') {
-        context.read<HomeBloc>().add(OpenDailyTrackPage());
+        homeBloc.add(OpenDailyTrackPage());
       } else if (message.data['page'] == 'صوتيات' ||
           message.data['page'] == 'كتب') {
-        context.read<HomeBloc>().add(OpenBookAudioPage());
+        homeBloc.add(OpenBookAudioPage());
       } else if (message.data['page'] == 'الدروس العلمية') {
-        context.read<HomeBloc>().add(OpenVideosPage());
+        homeBloc.add(OpenVideosPage());
       } else if (message.data['page'] == 'advertingImage') {
         await pageController.animateToPage(
           0,
           duration: const Duration(milliseconds: 150),
           curve: Curves.linear,
         );
+        if (!mounted) return;
         setState(() {});
       } else if (message.data['page'] == 'aboutInstitute') {
         await pageController.animateToPage(
@@ -118,16 +158,18 @@ class _MainPageState extends State<MainPage> {
           duration: const Duration(milliseconds: 150),
           curve: Curves.linear,
         );
+        if (!mounted) return;
         _scaffoldKey.currentState!.openEndDrawer();
-        context.read<HomeBloc>().add(OpenAboutInstitutePage());
+        homeBloc.add(OpenAboutInstitutePage());
       } else if (message.data['page'] == 'donation') {
         await pageController.animateToPage(
           0,
           duration: const Duration(milliseconds: 150),
           curve: Curves.linear,
         );
+        if (!mounted) return;
         _scaffoldKey.currentState?.openEndDrawer();
-        context.read<HomeBloc>().add(OpenDonationPage());
+        homeBloc.add(OpenDonationPage());
       } else if (message.data['page'] == 'profile') {
         await pageController.animateToPage(
           0,
@@ -140,62 +182,45 @@ class _MainPageState extends State<MainPage> {
           duration: const Duration(milliseconds: 150),
           curve: Curves.linear,
         );
-        context.read<HomeBloc>().add(OpenStudentRankingPage());
+        if (!mounted) return;
+        homeBloc.add(OpenStudentRankingPage());
         setState(() {});
-      }
-
-      if (message.data['studentId'] != null) {
-        List students = await getStudentsAccount();
-        for (var element in students) {
-          if (jsonDecode(element['data'])['id'].toString() ==
-              message.data['studentId'].toString()) {
-            Constant.student = StudentModel.fromMap(
-              jsonDecode(element['data']),
-            );
-            await setCurrentUser(Constant.student!);
-            break;
-          }
+      } else if (message.data['page'] == 'institute_actions') {
+        await pageController.animateToPage(
+          0,
+          duration: const Duration(milliseconds: 150),
+          curve: Curves.linear,
+        );
+        if (!mounted) {
+          return;
         }
+        navigator.push(
+          MaterialPageRoute(
+            builder: (context) => const StudentInstituteActionsPage(),
+          ),
+        );
       }
     } catch (e) {
-      log('handel error :' + e.toString());
+      log('handel error :$e');
     }
   }
 
   void initNotifications() {
-    FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
-      await addNotification(
-        AppNotification(
-          body: message.notification?.body ?? '',
-          id: message.messageId.toString(),
-          title: message.notification?.title ?? '',
-        ),
-      );
-      Constant.notifications.add(
-        AppNotification(
-          body: message.notification?.body ?? '',
-          id: message.messageId.toString(),
-          title: message.notification?.title ?? '',
-        ),
-      );
+    _messageSubscription = FirebaseMessaging.onMessage.listen((
+      RemoteMessage message,
+    ) async {
       await handelMessageArrive(message);
-      if ((message.data['page'] == 'صوتيات' ||
-              message.data['page'] == 'كتب' ||
-              message.data['page'] == 'الدروس العلمية') &&
-          (message.data['type'] != 'file' ||
-              message.data['method'] == 'delete')) {
-        //* don't show notification for collection methods or delete in files
-      } else if ((message.data['page'] == 'profile' &&
-          message.data['show'] == 'false')) {
-        //* don't show notification for update user name
-      } else {
-        const rtl = '\u200F'; // Right-To-Left Mark
 
+      if (shouldShowNotification(message)) {
+        final notification = appNotificationFromMessage(message);
+        await addNotification(notification);
+        Constant.notifications.add(notification);
+        const rtl = '\u200F'; // Right-To-Left Mark
         await flutterLocalNotificationsPlugin.show(
-          message.notification.hashCode,
-          '$rtl${message.notification?.title ?? ''}',
-          '$rtl${message.notification?.body ?? ''}',
-          NotificationDetails(
+          id: _notificationId(message),
+          title: '$rtl${notification.title}',
+          body: '$rtl${notification.body}',
+          notificationDetails: const NotificationDetails(
             android: AndroidNotificationDetails(
               'channelId',
               'channelName',
@@ -206,18 +231,14 @@ class _MainPageState extends State<MainPage> {
           payload: jsonEncode({'id': message.messageId, 'data': message.data}),
         );
 
-        if (message.data['page'] == 'advertingImage' ||
-            message.data['page'] == 'profile' ||
-            message.data['page'] == 'student_ranking') {
+        if (mounted) {
           setState(() {});
         }
       }
     });
   }
 
-  @override
-  void initState() {
-    pageController = PageController(initialPage: 0);
+  Future<void> _initLocalNotifications() async {
     const AndroidInitializationSettings initializationSettingsAndroid =
         AndroidInitializationSettings('@mipmap/ic_launcher');
 
@@ -234,21 +255,50 @@ class _MainPageState extends State<MainPage> {
           iOS: initializationSettingsDarwin,
         );
 
-    flutterLocalNotificationsPlugin.initialize(
-      initializationSettings,
+    await flutterLocalNotificationsPlugin
+        .resolvePlatformSpecificImplementation<
+          AndroidFlutterLocalNotificationsPlugin
+        >()
+        ?.createNotificationChannel(_notificationChannel);
+
+    await flutterLocalNotificationsPlugin.initialize(
+      settings: initializationSettings,
       onDidReceiveNotificationResponse: (details) async {
-        await handleMessageClick(
-          RemoteMessage(
-            data: jsonDecode(details.payload ?? '')['data'],
-            messageId: jsonDecode(details.payload ?? '')['id'],
-          ),
-        );
+        if (details.payload == null || details.payload!.isEmpty) {
+          return;
+        }
+
+        try {
+          final payload = jsonDecode(details.payload!);
+          final data = payload['data'];
+          if (data is! Map) {
+            return;
+          }
+
+          await handleMessageClick(
+            RemoteMessage(
+              data: Map<String, dynamic>.from(data),
+              messageId: payload['id']?.toString(),
+            ),
+          );
+        } catch (e) {
+          log('notification payload error: $e');
+        }
       },
     );
+  }
+
+  @override
+  void initState() {
+    pageController = PageController(initialPage: 0);
+
+    unawaited(_initLocalNotifications());
     initNotifications();
 
     // When app is in background and user taps the notification
-    FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) async {
+    _messageOpenedSubscription = FirebaseMessaging.onMessageOpenedApp.listen((
+      RemoteMessage message,
+    ) async {
       await handleMessageClick(message);
     });
 
@@ -259,6 +309,14 @@ class _MainPageState extends State<MainPage> {
       }
     });
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    _messageSubscription?.cancel();
+    _messageOpenedSubscription?.cancel();
+    pageController.dispose();
+    super.dispose();
   }
 
   @override
@@ -411,7 +469,7 @@ class _MainPageState extends State<MainPage> {
                     : pageController.page?.floor() ?? 0,
                 isLoading: isLoading,
                 pageController: pageController,
-                backgroundColor: Color(0xffEBE4E0),
+                backgroundColor: AppColors.appBarColor,
                 selectedColor: AppColors.lightBrownColor,
                 unSelectedColor: AppColors.bottomSheetUnSelectedColor,
                 items: [

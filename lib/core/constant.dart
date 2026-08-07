@@ -1,12 +1,12 @@
 import 'dart:developer';
 import 'dart:io';
 
-import 'package:abihanifa_android/home/models/app_notification.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:toast/toast.dart';
 
 import '../auth/models/student_model.dart';
+import '../home/models/app_notification.dart';
 import 'app_colors.dart';
 import 'internet_info.dart';
 
@@ -109,9 +109,10 @@ class Constant {
   static List studentsAccount = [];
   static List<AppNotification> notifications = [];
   static bool isThereLoading = false;
+
   // static const String domainName = 'http://10.0.2.2:8000';
-  // static const String domainName = 'http://alsaadinistitue.atwebpages.com';
-  static const String domainName = 'https://abihanifa.mahmoudbannan.com';
+
+  static const String domainName = 'https://ibn-aljazary.mahmoudbannan.com';
 
   static const String baseUrl = '$domainName/api';
   static const String getAboutText = '$baseUrl/getAboutText';
@@ -125,6 +126,14 @@ class Constant {
   static const String getStudentGrades = '$baseUrl/getGrades';
   static const String getStudentDonations = '$baseUrl/getStudentDonations';
   static const String getStudentMarks = '$baseUrl/getStudentMarks';
+  static const String getStudentPrayers = '$baseUrl/getStudentPrayers';
+  static const String addStudentPrayer = '$baseUrl/addStudentPrayer';
+  static const String updateStudentPrayer = '$baseUrl/updateStudentPrayer';
+  static const String getInstituteActions = '$baseUrl/getInstituteActions';
+  static const String getInstituteActionStudents =
+      '$baseUrl/getInstituteActionStudents';
+  static const String updateInstituteActionStudent =
+      '$baseUrl/updateInstituteActionStudent';
   static const String getStudentDailyTrack = '$baseUrl/getStudentDailyProgress';
   static const String getStudentDailyProgress =
       '$baseUrl/getStudentDailyProgress';

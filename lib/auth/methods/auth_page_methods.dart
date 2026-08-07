@@ -305,18 +305,31 @@ Future<void> login({
               : true;
           if (isFileTableCreatedSuccessfully &&
               isUsersTableCreatedSuccessfully) {
-            Constant.student = StudentModel.fromMap(jsonDecode(res.body));
+            final responseData = jsonDecode(res.body);
+            final token = responseData['token']?.toString();
+            if (token == null || token.isEmpty) {
+              Toast.show(
+                'حصل خظأ غير متوقع',
+                duration: Toast.lengthLong,
+              );
+              log('Login response did not include a token: ${res.body}');
+              return false;
+            }
+            Constant.student = StudentModel.fromMap(responseData);
             await storeToken(
-              token: jsonDecode(res.body)['token'],
+              token: token,
               id: Constant.student!.id.toString(),
             );
             await addStudentAccount(Constant.student!);
             String urls = '';
-            for (var element in jsonDecode(res.body)['imgUrls']) {
-              urls += '\n$element';
+            final imgUrls = responseData['imgUrls'];
+            if (imgUrls is List) {
+              for (var element in imgUrls) {
+                urls += '\n$element';
+              }
+              urls = urls.replaceFirst('\n', '');
+              await updateAdvertingImages(urls);
             }
-            urls = urls.replaceFirst('\n', '');
-            await updateAdvertingImages(urls);
             Constant.studentsAccount = await getStudentsAccount();
             SharedPreferences sh = await SharedPreferences.getInstance();
             await sh.setBool('isFirstTime', false);
