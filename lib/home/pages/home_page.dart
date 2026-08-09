@@ -434,14 +434,16 @@ class _HomePageState extends State<HomePage> {
                                                     ),
                                                 fit: BoxFit.fill,
                                                 errorWidget:
-                                                    (context, url, error) =>
-                                                        Center(
-                                                          child: Text(
-                                                            textAlign: TextAlign
-                                                                .center,
-                                                            error.toString(),
-                                                          ),
+                                                    (context, url, error) {
+                                                      log(error.toString());
+                                                      return Center(
+                                                        child: Text(
+                                                          textAlign:
+                                                              TextAlign.center,
+                                                          error.toString(),
                                                         ),
+                                                      );
+                                                    },
                                                 imageUrl:
                                                     selectedImageIndex >=
                                                         snapshot.data.length

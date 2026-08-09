@@ -25,14 +25,14 @@ import '../pages/student_test_page.dart';
 
 Future<void> addNotification(AppNotification notification) async {
   SharedPreferences sh = await SharedPreferences.getInstance();
-  List<String> notifications = (await sh.getStringList('notifications')) ?? [];
+  List<String> notifications = (sh.getStringList('notifications')) ?? [];
   notifications.add(jsonEncode(notification.toMap()));
   await sh.setStringList('notifications', notifications);
 }
 
 Future<List<AppNotification>> getNotifications() async {
   SharedPreferences sh = await SharedPreferences.getInstance();
-  List<String> notifications = (await sh.getStringList('notifications')) ?? [];
+  List<String> notifications = (sh.getStringList('notifications')) ?? [];
   return notifications
       .map((e) => AppNotification.fromMap(jsonDecode(e)))
       .toList();
@@ -40,7 +40,7 @@ Future<List<AppNotification>> getNotifications() async {
 
 Future<void> removeNotification(AppNotification notification) async {
   SharedPreferences sh = await SharedPreferences.getInstance();
-  List<String> notifications = (await sh.getStringList('notifications')) ?? [];
+  List<String> notifications = (sh.getStringList('notifications')) ?? [];
   notifications = notifications
       .where((element) => jsonDecode(element)['id'] != notification.id)
       .toList();
@@ -416,7 +416,7 @@ Future<Map?> getStudentWeaklyTrack(BuildContext context) async {
 Future<void> updateAdvertingImages(String images) async {
   try {
     Directory dir = await getApplicationDocumentsDirectory();
-    File file = File(dir.path + '/advertingImage.txt');
+    File file = File('${dir.path}/advertingImage.txt');
     file.writeAsStringSync(images);
   } catch (e) {
     log(e.toString());

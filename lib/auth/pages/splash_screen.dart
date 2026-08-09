@@ -77,6 +77,7 @@ class _SplashScreenState extends State<SplashScreen> {
               AnimatedPositioned(
                 top: topRightLogoTopPadding.h,
                 right: topRightLogoRightPadding.w,
+                duration: duration,
                 child: AnimatedRotation(
                   duration: duration,
                   turns: topRightLogoRightPadding != 0 ? 0.2.sp : 0,
@@ -85,11 +86,11 @@ class _SplashScreenState extends State<SplashScreen> {
                     width: 100.w,
                   ),
                 ),
-                duration: duration,
               ),
               AnimatedPositioned(
                 bottom: topRightLogoTopPadding.h,
                 left: topRightLogoRightPadding.w,
+                duration: duration,
                 child: AnimatedRotation(
                   duration: duration,
                   turns: topRightLogoRightPadding != 0 ? -0.2.sp : 0,
@@ -98,10 +99,10 @@ class _SplashScreenState extends State<SplashScreen> {
                     width: 100.w,
                   ),
                 ),
-                duration: duration,
               ),
               AnimatedPositioned(
                 top: showAuth ? 60.h : 220.h,
+                duration: duration,
                 child: AnimatedOpacity(
                   opacity: logoOpacity ? 0 : 1,
                   duration: duration,
@@ -112,7 +113,6 @@ class _SplashScreenState extends State<SplashScreen> {
                     child: Image.asset('assets/images/logo.png'),
                   ),
                 ),
-                duration: duration,
               ),
               AnimatedPositioned(
                 top: 240.h,

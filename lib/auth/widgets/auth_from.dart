@@ -167,15 +167,15 @@ class AuthForm extends StatelessWidget {
               },
             ),
             SizedBox(height: 20.h),
-            LoginButton(
-              textColor: AppColors.darkBrownColor,
-              boxShadow: [],
-              backgroundColor: Colors.transparent,
-              text: 'التسجيل لاحقاً',
-              onTap: () async {
-                await skipLogIn(context);
-              },
-            ),
+            // LoginButton(
+            //   textColor: AppColors.darkBrownColor,
+            //   boxShadow: [],
+            //   backgroundColor: Colors.transparent,
+            //   text: 'التسجيل لاحقاً',
+            //   onTap: () async {
+            //     await skipLogIn(context);
+            //   },
+            // ),
           ],
         ),
       ),

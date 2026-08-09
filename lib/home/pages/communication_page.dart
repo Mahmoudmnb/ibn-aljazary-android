@@ -33,7 +33,7 @@ class CommunicationPage extends StatelessWidget {
                           try {
                             final Uri launchUri = Uri(
                               scheme: 'tel',
-                              path: '+963983130657',
+                              path: '0995656818',
                             );
                             await launchUrl(launchUri);
                           } catch (e) {
@@ -45,7 +45,7 @@ class CommunicationPage extends StatelessWidget {
                           }
                         },
                         child: Text(
-                          '+963983130657',
+                          '0995656818',
                           style: TextStyle(
                             fontFamily: 'Almarai',
                             fontSize: 13.sp,
@@ -74,7 +74,7 @@ class CommunicationPage extends StatelessWidget {
                           try {
                             final Uri launchUri = Uri(
                               scheme: 'tel',
-                              path: '+963947219157',
+                              path: '0937025401',
                             );
                             await launchUrl(launchUri);
                           } catch (e) {
@@ -86,7 +86,7 @@ class CommunicationPage extends StatelessWidget {
                           }
                         },
                         child: Text(
-                          '+963947219157',
+                          '0937025401',
                           style: TextStyle(
                             fontFamily: 'Almarai',
                             fontSize: 13.sp,
@@ -118,7 +118,7 @@ class CommunicationPage extends StatelessWidget {
                   try {
                     launchUrl(
                       Uri.parse(
-                        'https://whatsapp.com/channel/0029VbAZddkBlHpbk8U4U72M',
+                        'https://whatsapp.com/channel/0029VbC18iD4CrfbeSwhft2m',
                       ),
                     );
                   } catch (e) {
@@ -144,32 +144,8 @@ class CommunicationPage extends StatelessWidget {
               content: GestureDetector(
                 onTap: () {
                   try {
-                    launchUrl(Uri.parse('https://t.me/alimamabuhanifa'));
-                  } catch (e) {
-                    ToastContext().init(context);
-                    Toast.show('حصل خطأ غير متوقع', duration: Toast.lengthLong);
-                  }
-                },
-                child: Text(
-                  'رابط الدخول للقناة',
-                  style: TextStyle(
-                    decoration: TextDecoration.underline,
-                    fontFamily: 'Almarai',
-                    fontSize: 13.sp,
-                    fontWeight: FontWeight.w700,
-                    color: AppColors.green,
-                  ),
-                ),
-              ),
-              title: 'قناة التلغرام',
-            ),
-            SizedBox(height: 16.h),
-            CommunicationPageContainer(
-              content: GestureDetector(
-                onTap: () {
-                  try {
                     launchUrl(
-                      Uri.parse('https://www.facebook.com/share/16XDMaaFjb/'),
+                      Uri.parse('https://www.facebook.com/share/1Bo5kC9wpg/'),
                     );
                   } catch (e) {
                     ToastContext().init(context);
@@ -188,60 +164,6 @@ class CommunicationPage extends StatelessWidget {
                 ),
               ),
               title: 'صفحة الفيسبوك',
-            ),
-            SizedBox(height: 16.h),
-            CommunicationPageContainer(
-              content: GestureDetector(
-                onTap: () {
-                  try {
-                    launchUrl(
-                      Uri.parse(
-                        'https://www.instagram.com/alemam.abo.hanfa?igsh=YnppZGxpNmFxY2tm',
-                      ),
-                    );
-                  } catch (e) {
-                    ToastContext().init(context);
-                    Toast.show('حصل خطأ غير متوقع', duration: Toast.lengthLong);
-                  }
-                },
-                child: Text(
-                  'رابط الصفحة',
-                  style: TextStyle(
-                    decoration: TextDecoration.underline,
-                    fontFamily: 'Almarai',
-                    fontSize: 13.sp,
-                    fontWeight: FontWeight.w700,
-                    color: AppColors.green,
-                  ),
-                ),
-              ),
-              title: 'صفحة الانستغرام',
-            ),
-            SizedBox(height: 16.h),
-            CommunicationPageContainer(
-              content: GestureDetector(
-                onTap: () {
-                  try {
-                    launchUrl(
-                      Uri.parse('https://m.youtube.com/@alemam.abo.hanfa'),
-                    );
-                  } catch (e) {
-                    ToastContext().init(context);
-                    Toast.show('حصل خطأ غير متوقع', duration: Toast.lengthLong);
-                  }
-                },
-                child: Text(
-                  'رابط الصفحة',
-                  style: TextStyle(
-                    decoration: TextDecoration.underline,
-                    fontFamily: 'Almarai',
-                    fontSize: 13.sp,
-                    fontWeight: FontWeight.w700,
-                    color: AppColors.green,
-                  ),
-                ),
-              ),
-              title: 'قناة اليوتيوب',
             ),
             SizedBox(height: 16.h),
           ],
