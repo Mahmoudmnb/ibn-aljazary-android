@@ -205,6 +205,78 @@ class _StudentInstituteActionsPageState
     return AppColors.greyBrownColor;
   }
 
+  bool _isTrue(dynamic value) {
+    return value == true || value == 1 || value?.toString() == '1';
+  }
+
+  String _dateText(dynamic value) {
+    final date = DateTime.tryParse(value?.toString() ?? '');
+    if (date == null) {
+      return value?.toString() ?? '';
+    }
+    return '${date.day.toString().padLeft(2, '0')} - ${date.month.toString().padLeft(2, '0')} - ${date.year}';
+  }
+
+  Widget _infoRow({
+    required IconData icon,
+    required String label,
+    required String value,
+  }) {
+    if (value.trim().isEmpty) {
+      return const SizedBox.shrink();
+    }
+
+    return Padding(
+      padding: EdgeInsets.only(top: 10.h),
+      child: Directionality(
+        textDirection: TextDirection.rtl,
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Container(
+              width: 30.w,
+              height: 30.h,
+              decoration: BoxDecoration(
+                color: AppColors.appBarColor,
+                borderRadius: BorderRadius.circular(9.sp),
+              ),
+              child: Icon(icon, color: AppColors.brownColor, size: 16.sp),
+            ),
+            SizedBox(width: 9.w),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    label,
+                    style: TextStyle(
+                      color: AppColors.greyBrownColor,
+                      fontSize: 11.sp,
+                      fontFamily: 'Almarai',
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                  SizedBox(height: 3.h),
+                  Text(
+                    value,
+                    textAlign: TextAlign.right,
+                    style: TextStyle(
+                      color: AppColors.darkBrownColor,
+                      fontSize: 13.sp,
+                      height: 1.45,
+                      fontFamily: 'Almarai',
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     ToastContext().init(context);
@@ -263,6 +335,16 @@ class _StudentInstituteActionsPageState
                         final isUpdating =
                             _updatingMembershipId != null &&
                             _updatingMembershipId == membershipId;
+                        final actionTitle = action['action']?.toString() ?? '';
+                        final actionDescription =
+                            action['description']?.toString() ?? '';
+                        final actionDate = _dateText(action['action_date']);
+                        final actionStatus = _isTrue(action['is_active'])
+                            ? 'نشط'
+                            : 'غير نشط';
+                        final responseStatus = _acceptedText(
+                          action['accepted'],
+                        );
 
                         return Container(
                           width: 291.w,
@@ -282,64 +364,116 @@ class _StudentInstituteActionsPageState
                               ),
                             ],
                           ),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.end,
-                            children: [
-                              Text(
-                                action['action']?.toString() ?? '',
-                                textDirection: TextDirection.rtl,
-                                textAlign: TextAlign.right,
-                                style: TextStyle(
-                                  color: AppColors.brownColor,
-                                  fontSize: 16.sp,
-                                  fontFamily: 'Almarai',
-                                  fontWeight: FontWeight.w700,
-                                ),
-                              ),
-                              SizedBox(height: 8.h),
-                              Text(
-                                _acceptedText(action['accepted']),
-                                textDirection: TextDirection.rtl,
-                                style: TextStyle(
-                                  color: _acceptedColor(action['accepted']),
-                                  fontSize: 14.sp,
-                                  fontFamily: 'Almarai',
-                                  fontWeight: FontWeight.w700,
-                                ),
-                              ),
-                              SizedBox(height: 14.h),
-                              isUpdating
-                                  ? Center(
-                                      child: CircularProgressIndicator(
-                                        color: AppColors.lightBrownColor,
+                          child: Directionality(
+                            textDirection: TextDirection.rtl,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Row(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Expanded(
+                                      child: Text(
+                                        actionTitle,
+                                        textAlign: TextAlign.right,
+                                        style: TextStyle(
+                                          color: AppColors.brownColor,
+                                          fontSize: 16.sp,
+                                          height: 1.35,
+                                          fontFamily: 'Almarai',
+                                          fontWeight: FontWeight.w700,
+                                        ),
                                       ),
-                                    )
-                                  : Row(
-                                      children: [
-                                        Expanded(
-                                          child: _ActionStatusButton(
-                                            text: 'رفض',
-                                            color: const Color(0xffDE0000),
-                                            onTap: () => _updateActionStatus(
-                                              action,
-                                              false,
-                                            ),
-                                          ),
-                                        ),
-                                        SizedBox(width: 10.w),
-                                        Expanded(
-                                          child: _ActionStatusButton(
-                                            text: 'قبول',
-                                            color: AppColors.green2,
-                                            onTap: () => _updateActionStatus(
-                                              action,
-                                              true,
-                                            ),
-                                          ),
-                                        ),
-                                      ],
                                     ),
-                            ],
+                                    SizedBox(width: 8.w),
+                                    Container(
+                                      padding: EdgeInsets.symmetric(
+                                        horizontal: 9.w,
+                                        vertical: 5.h,
+                                      ),
+                                      decoration: BoxDecoration(
+                                        color: _acceptedColor(
+                                          action['accepted'],
+                                        ).withValues(alpha: 0.12),
+                                        borderRadius: BorderRadius.circular(
+                                          20.sp,
+                                        ),
+                                      ),
+                                      child: Text(
+                                        responseStatus,
+                                        style: TextStyle(
+                                          color: _acceptedColor(
+                                            action['accepted'],
+                                          ),
+                                          fontSize: 11.sp,
+                                          fontFamily: 'Almarai',
+                                          fontWeight: FontWeight.w700,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                SizedBox(height: 4.h),
+                                _infoRow(
+                                  icon: Icons.calendar_month_outlined,
+                                  label: 'تاريخ النشاط',
+                                  value: actionDate,
+                                ),
+                                _infoRow(
+                                  icon: Icons.article_outlined,
+                                  label: 'الوصف',
+                                  value: actionDescription,
+                                ),
+                                _infoRow(
+                                  icon: Icons.toggle_on_outlined,
+                                  label: 'حالة النشاط',
+                                  value: actionStatus,
+                                ),
+                                _infoRow(
+                                  icon: Icons.confirmation_number_outlined,
+                                  label: 'رقم النشاط',
+                                  value: action['id']?.toString() ?? '',
+                                ),
+                                _infoRow(
+                                  icon: Icons.assignment_ind_outlined,
+                                  label: 'رقم المشاركة',
+                                  value:
+                                      action['membership_id']?.toString() ?? '',
+                                ),
+                                SizedBox(height: 14.h),
+                                isUpdating
+                                    ? Center(
+                                        child: CircularProgressIndicator(
+                                          color: AppColors.lightBrownColor,
+                                        ),
+                                      )
+                                    : Row(
+                                        children: [
+                                          Expanded(
+                                            child: _ActionStatusButton(
+                                              text: 'رفض',
+                                              color: const Color(0xffDE0000),
+                                              onTap: () => _updateActionStatus(
+                                                action,
+                                                false,
+                                              ),
+                                            ),
+                                          ),
+                                          SizedBox(width: 10.w),
+                                          Expanded(
+                                            child: _ActionStatusButton(
+                                              text: 'قبول',
+                                              color: AppColors.green2,
+                                              onTap: () => _updateActionStatus(
+                                                action,
+                                                true,
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                              ],
+                            ),
                           ),
                         );
                       },

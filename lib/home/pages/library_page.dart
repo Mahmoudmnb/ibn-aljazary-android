@@ -13,10 +13,8 @@ import '../models/file_collection.dart';
 import '../widgets/drawer.dart';
 import '../widgets/home_page_app_bar.dart';
 import '../widgets/widgets.dart';
-import 'add_student_prays_page.dart';
 import 'collection_content.dart';
 import 'communication_page.dart';
-import 'student_institute_actions_page.dart';
 
 class LibraryPage extends StatefulWidget {
   final List audios;
@@ -67,38 +65,49 @@ class _LibraryPageState extends State<LibraryPage> {
             onTap: () async {
               if (!Constant.isThereLoading) {
                 Constant.isThereLoading = true;
-                await getStudentDonations(context);
-                _scaffoldKey.currentState!.closeEndDrawer();
+                int code = await getStudentTest(
+                  context: context,
+                  testType: 'أوقاف',
+                );
+                _scaffoldKey.currentState?.closeEndDrawer();
                 Constant.isThereLoading = false;
+                if (code == 401) {
+                  setState(() {});
+                }
               }
             },
-            text: 'التبرعات',
+            text: 'سبر الأوقاف',
           ),
           DrawerItem(
             onTap: () async {
               if (!Constant.isThereLoading) {
-                _scaffoldKey.currentState?.closeEndDrawer();
-                await Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (context) => const AddStudentPraysPage(),
-                  ),
+                Constant.isThereLoading = true;
+                int code = await getStudentTest(
+                  context: context,
+                  testType: 'منهج',
                 );
+                _scaffoldKey.currentState?.closeEndDrawer();
+                Constant.isThereLoading = false;
+                if (code == 401) {
+                  setState(() {});
+                }
               }
             },
-            text: 'إضافة الصلوات',
+            text: 'علامات المنهج',
           ),
           DrawerItem(
             onTap: () async {
               if (!Constant.isThereLoading) {
+                Constant.isThereLoading = true;
+                int code = await getStudentGrades(context);
                 _scaffoldKey.currentState?.closeEndDrawer();
-                await Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (context) => const StudentInstituteActionsPage(),
-                  ),
-                );
+                Constant.isThereLoading = false;
+                if (code == 401) {
+                  setState(() {});
+                }
               }
             },
-            text: 'نشاطات المعهد',
+            text: 'الشهادات',
           ),
           DrawerItem(
             onTap: () async {

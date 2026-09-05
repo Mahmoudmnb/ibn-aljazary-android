@@ -131,9 +131,24 @@ class _MonthlyProgressContainer extends State<MonthlyProgressContainer> {
                               fontSize: 12.sp,
                             ),
                           ),
+                          widget.data[index].pageNumbers.isEmpty
+                              ? SizedBox.shrink()
+                              : Expanded(
+                                  child: Text(
+                                    '  (${widget.data[index].pageNumbers.join(',')})',
+                                    overflow: TextOverflow.ellipsis,
+                                    style: TextStyle(
+                                      color: AppColors.greyBrownColor,
+                                      fontFamily: 'Almarai',
+                                      fontSize: 12.sp,
+                                    ),
+                                  ),
+                                ),
                           Spacer(),
                           SizedBox(
-                            width: 170.w,
+                            width: widget.data[index].pageNumbers.isEmpty
+                                ? 170.w
+                                : 110.w,
                             child: Text(
                               widget.data[index].name,
                               overflow: TextOverflow.ellipsis,

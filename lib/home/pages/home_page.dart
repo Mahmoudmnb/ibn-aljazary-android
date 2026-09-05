@@ -86,17 +86,14 @@ class _HomePageState extends State<HomePage> {
       },
       endDrawer: BlocBuilder<HomeBloc, HomeState>(
         builder: (context, state) {
-          bool isDonationLoading = false;
           bool isPersonalFileLoading = false;
           if (state is DonationPageOpened) {
             if (!Constant.isThereLoading) {
               _scaffoldKey.currentState!.openEndDrawer();
               Constant.isThereLoading = true;
-              isDonationLoading = true;
               getStudentDonations(context).then((value) {
                 _scaffoldKey.currentState!.closeEndDrawer();
                 Constant.isThereLoading = false;
-                isDonationLoading = false;
                 context.read<HomeBloc>().add(InitEvent());
               });
             }
@@ -173,46 +170,52 @@ class _HomePageState extends State<HomePage> {
                 text: 'الملف الشخصي',
               ),
               DrawerItem(
-                isLoading: isDonationLoading,
                 onTap: () async {
                   if (!Constant.isThereLoading) {
                     Constant.isThereLoading = true;
-                    int code = await getStudentDonations(context);
-                    _scaffoldKey.currentState!.closeEndDrawer();
+                    int code = await getStudentTest(
+                      context: context,
+                      testType: 'أوقاف',
+                    );
+                    _scaffoldKey.currentState?.closeEndDrawer();
                     Constant.isThereLoading = false;
                     if (code == 401) {
                       setState(() {});
                     }
                   }
                 },
-                text: 'التبرعات',
+                text: 'سبر الأوقاف',
               ),
               DrawerItem(
                 onTap: () async {
                   if (!Constant.isThereLoading) {
-                    _scaffoldKey.currentState?.closeEndDrawer();
-                    await Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (context) => const AddStudentPraysPage(),
-                      ),
+                    Constant.isThereLoading = true;
+                    int code = await getStudentTest(
+                      context: context,
+                      testType: 'منهج',
                     );
+                    _scaffoldKey.currentState?.closeEndDrawer();
+                    Constant.isThereLoading = false;
+                    if (code == 401) {
+                      setState(() {});
+                    }
                   }
                 },
-                text: 'إضافة الصلوات',
+                text: 'علامات المنهج',
               ),
               DrawerItem(
                 onTap: () async {
                   if (!Constant.isThereLoading) {
+                    Constant.isThereLoading = true;
+                    int code = await getStudentGrades(context);
                     _scaffoldKey.currentState?.closeEndDrawer();
-                    await Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (context) =>
-                            const StudentInstituteActionsPage(),
-                      ),
-                    );
+                    Constant.isThereLoading = false;
+                    if (code == 401) {
+                      setState(() {});
+                    }
                   }
                 },
-                text: 'نشاطات المعهد',
+                text: 'الشهادات',
               ),
               DrawerItem(
                 onTap: () async {
@@ -510,7 +513,7 @@ class _HomePageState extends State<HomePage> {
                       SizedBox(height: 16.h),
                       Container(
                         width: 300.w,
-                        height: 215.h,
+                        height: 230.h,
                         decoration: BoxDecoration(
                           color: Colors.white,
                           borderRadius: BorderRadius.circular(16.sp),
@@ -565,91 +568,45 @@ class _HomePageState extends State<HomePage> {
                                   },
                                 ),
                                 SizedBox(width: 15.w),
-                                BlocBuilder<HomeBloc, HomeState>(
-                                  builder: (context, state) {
-                                    bool isLoading = false;
-                                    if (state is AwqafTestPageOpened) {
-                                      if (!Constant.isThereLoading) {
-                                        Constant.isThereLoading = true;
-                                        isLoading = true;
-                                        getStudentTest(
-                                          context: context,
-                                          testType: 'أوقاف',
-                                          date: state.date,
-                                        ).then((value) {
-                                          isLoading = false;
-                                          Constant.isThereLoading = false;
-                                          context.read<HomeBloc>().add(
-                                            InitEvent(),
-                                          );
-                                        });
+                                HomePageButton(
+                                  width: 60.w,
+                                  height: 60.h,
+                                  iconData: Icons.volunteer_activism_outlined,
+                                  backgroundColor: AppColors.green2,
+                                  onTap: () async {
+                                    if (!Constant.isThereLoading) {
+                                      Constant.isThereLoading = true;
+                                      int code = await getStudentDonations(
+                                        context,
+                                      );
+                                      Constant.isThereLoading = false;
+                                      if (code == 401) {
+                                        setState(() {});
                                       }
                                     }
-                                    return HomePageButton(
-                                      width: 60.w,
-                                      height: 60.h,
-                                      iconData: Mnb.award,
-                                      backgroundColor: AppColors.green2,
-                                      isLoading: isLoading,
-                                      onTap: () async {
-                                        if (!Constant.isThereLoading) {
-                                          Constant.isThereLoading = true;
-                                          int code = await getStudentTest(
-                                            context: context,
-                                            testType: 'أوقاف',
-                                          );
-                                          if (code == 401) {
-                                            setState(() {});
-                                          }
-                                          Constant.isThereLoading = false;
-                                        }
-                                      },
-                                      text: 'سبر الأوقاف',
-                                    );
                                   },
+                                  text: 'التبرعات',
                                 ),
                                 SizedBox(width: 15.w),
-                                BlocBuilder<HomeBloc, HomeState>(
-                                  builder: (context, state) {
-                                    bool isLoading = false;
-                                    if (state is CourseTestPageOpened) {
-                                      if (!Constant.isThereLoading) {
-                                        Constant.isThereLoading = true;
-                                        isLoading = true;
-                                        getStudentTest(
-                                          context: context,
-                                          testType: 'منهج',
-                                        ).then((value) {
-                                          isLoading = false;
-                                          Constant.isThereLoading = false;
-                                          context.read<HomeBloc>().add(
-                                            InitEvent(),
-                                          );
-                                        });
-                                      }
+                                HomePageButton(
+                                  width: 60.w,
+                                  height: 60.h,
+                                  iconData: Icons.fact_check_outlined,
+                                  backgroundColor: AppColors.green2,
+                                  onTap: () async {
+                                    if (!Constant.isThereLoading) {
+                                      Constant.isThereLoading = true;
+                                      await Navigator.of(context).push(
+                                        MaterialPageRoute(
+                                          builder: (context) =>
+                                              const AddStudentPraysPage(),
+                                        ),
+                                      );
+                                      Constant.isThereLoading = false;
+                                      setState(() {});
                                     }
-                                    return HomePageButton(
-                                      width: 60.w,
-                                      height: 60.h,
-                                      isLoading: isLoading,
-                                      iconData: Mnb.teacher,
-                                      backgroundColor: AppColors.green2,
-                                      onTap: () async {
-                                        if (!Constant.isThereLoading) {
-                                          Constant.isThereLoading = true;
-                                          int code = await getStudentTest(
-                                            context: context,
-                                            testType: 'منهج',
-                                          );
-                                          if (code == 401) {
-                                            setState(() {});
-                                          }
-                                          Constant.isThereLoading = false;
-                                        }
-                                      },
-                                      text: 'علامات المنهج',
-                                    );
                                   },
+                                  text: 'الصلوات',
                                 ),
                               ],
                             ),
@@ -657,43 +614,25 @@ class _HomePageState extends State<HomePage> {
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                               children: [
-                                BlocBuilder<HomeBloc, HomeState>(
-                                  builder: (context, state) {
-                                    bool isLoading = false;
-                                    if (state is GradesPageOpened) {
-                                      if (!Constant.isThereLoading) {
-                                        Constant.isThereLoading = true;
-                                        isLoading = true;
-                                        getStudentGrades(context).then((value) {
-                                          isLoading = false;
-                                          Constant.isThereLoading = false;
-                                          context.read<HomeBloc>().add(
-                                            InitEvent(),
-                                          );
-                                        });
-                                      }
+                                HomePageButton(
+                                  width: 60.w,
+                                  height: 60.h,
+                                  iconData: Icons.event_available_outlined,
+                                  backgroundColor: AppColors.green2,
+                                  onTap: () async {
+                                    if (!Constant.isThereLoading) {
+                                      Constant.isThereLoading = true;
+                                      await Navigator.of(context).push(
+                                        MaterialPageRoute(
+                                          builder: (context) =>
+                                              const StudentInstituteActionsPage(),
+                                        ),
+                                      );
+                                      Constant.isThereLoading = false;
+                                      setState(() {});
                                     }
-                                    return HomePageButton(
-                                      width: 60.w,
-                                      height: 60.h,
-                                      iconData: Mnb.medal,
-                                      isLoading: isLoading,
-                                      backgroundColor: AppColors.green2,
-                                      onTap: () async {
-                                        if (!Constant.isThereLoading) {
-                                          Constant.isThereLoading = true;
-                                          int code = await getStudentGrades(
-                                            context,
-                                          );
-                                          Constant.isThereLoading = false;
-                                          if (code == 401) {
-                                            setState(() {});
-                                          }
-                                        }
-                                      },
-                                      text: 'الشهادات',
-                                    );
                                   },
+                                  text: 'نشاطات المعهد',
                                 ),
                                 SizedBox(width: 15.w),
                                 BlocBuilder<HomeBloc, HomeState>(

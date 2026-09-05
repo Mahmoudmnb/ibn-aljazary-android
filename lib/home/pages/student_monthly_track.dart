@@ -235,6 +235,66 @@ class _StudentMonthlyTrackState extends State<StudentMonthlyTrack> {
                                     ],
                                   ),
                                 ),
+                                studentTrackModel!.rankPercent == null &&
+                                        studentTrackModel!.rankValue.isEmpty
+                                    ? SizedBox.shrink()
+                                    : Column(
+                                        children: [
+                                          SizedBox(height: 8.h),
+                                          Container(
+                                            width: 291.w,
+                                            height: 45.h,
+                                            alignment: Alignment.centerRight,
+                                            padding: EdgeInsets.symmetric(
+                                              horizontal: 15.w,
+                                            ),
+                                            decoration: BoxDecoration(
+                                              boxShadow: [
+                                                BoxShadow(
+                                                  color: Color(0x0c000000),
+                                                  blurRadius: 8,
+                                                  offset: Offset(0, 2),
+                                                ),
+                                              ],
+                                              color: Colors.white,
+                                              borderRadius:
+                                                  BorderRadius.circular(16.sp),
+                                            ),
+                                            child: Row(
+                                              children: [
+                                                Text(
+                                                  '${studentTrackModel!.rankPercent ?? ''} ${studentTrackModel!.rankValue}'
+                                                      .trim(),
+                                                  textAlign: TextAlign.end,
+                                                  overflow:
+                                                      TextOverflow.ellipsis,
+                                                  style: TextStyle(
+                                                    color: AppColors
+                                                        .darkBrownColor,
+                                                    fontSize: 15.sp,
+                                                    fontFamily: 'Almarai',
+                                                    fontWeight: FontWeight.w700,
+                                                  ),
+                                                ),
+                                                Spacer(),
+                                                Text(
+                                                  'التقييم',
+                                                  textAlign: TextAlign.end,
+                                                  overflow:
+                                                      TextOverflow.ellipsis,
+                                                  style: TextStyle(
+                                                    color: AppColors
+                                                        .darkBrownColor,
+                                                    fontSize: 15.sp,
+                                                    fontFamily: 'Almarai',
+                                                    fontWeight: FontWeight.w700,
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ],
+                                      ),
                               ],
                             ),
                           ),

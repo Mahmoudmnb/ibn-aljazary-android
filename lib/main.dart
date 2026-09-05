@@ -122,7 +122,7 @@ class MyApp extends StatelessWidget {
     return BlocProvider(
       create: (context) => HomeBloc(),
       child: MaterialApp(
-        title: 'مقرأة الإمام ابي حنيفة',
+        title: 'دار الإمام ابن الجزري',
         theme: ThemeData(
           colorScheme: ColorScheme.fromSeed(seedColor: AppColors.brownColor),
           scaffoldBackgroundColor: Colors.transparent,

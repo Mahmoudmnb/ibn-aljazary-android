@@ -322,6 +322,8 @@ class _MainPageState extends State<MainPage> {
   @override
   Widget build(BuildContext context) {
     ToastContext().init(context);
+    final isKeyboardOpen = MediaQuery.viewInsetsOf(context).bottom > 0;
+
     return SafeArea(
       child: PopScope(
         canPop: false,
@@ -362,219 +364,231 @@ class _MainPageState extends State<MainPage> {
               CoursesPage(courses: courses, pageController: pageController),
             ],
           ),
-          bottomNavigationBar: BlocBuilder<HomeBloc, HomeState>(
-            builder: (context, state) {
-              bool isLoading = false;
-              int selectedIndex = 0;
-              if (state is DailyTrackPageOpened) {
-                if (!Constant.isThereLoading) {
-                  isLoading = true;
-                  selectedIndex = 1;
-                  if (Constant.student != null) {
-                    Constant.isThereLoading = true;
-                    getStudentDailyTrack(context).then((value) {
-                      if (value == null) {
-                        setState(() {});
-                      } else {
-                        List? temp = value;
-                        getStudentWeaklyTrack(context).then((value) {
-                          Map? temp1 = value;
-                          if (temp1 != null) {
-                            studentDailyTrack = temp;
-                            studentWeaklyTrack = temp1;
+          bottomNavigationBar: isKeyboardOpen
+              ? null
+              : BlocBuilder<HomeBloc, HomeState>(
+                  builder: (context, state) {
+                    bool isLoading = false;
+                    int selectedIndex = 0;
+                    if (state is DailyTrackPageOpened) {
+                      if (!Constant.isThereLoading) {
+                        isLoading = true;
+                        selectedIndex = 1;
+                        if (Constant.student != null) {
+                          Constant.isThereLoading = true;
+                          getStudentDailyTrack(context).then((value) {
+                            if (value == null) {
+                              setState(() {});
+                            } else {
+                              List? temp = value;
+                              getStudentWeaklyTrack(context).then((value) {
+                                Map? temp1 = value;
+                                if (temp1 != null) {
+                                  studentDailyTrack = temp;
+                                  studentWeaklyTrack = temp1;
+                                  setState(() {});
+                                  pageController
+                                      .animateToPage(
+                                        1,
+                                        duration: const Duration(
+                                          milliseconds: 150,
+                                        ),
+                                        curve: Curves.linear,
+                                      )
+                                      .then((value) {
+                                        isLoading = false;
+                                        Constant.isThereLoading = false;
+                                        context.read<HomeBloc>().add(
+                                          InitEvent(),
+                                        );
+                                      });
+                                }
+                              });
+                            }
+                          });
+                        } else {
+                          pageController
+                              .animateToPage(
+                                1,
+                                duration: const Duration(milliseconds: 150),
+                                curve: Curves.linear,
+                              )
+                              .then((value) {
+                                isLoading = false;
+                                Constant.isThereLoading = false;
+                                context.read<HomeBloc>().add(InitEvent());
+                              });
+                        }
+                      }
+                    } else if (state is BookAudioPageOpened) {
+                      if (!Constant.isThereLoading) {
+                        Constant.isThereLoading = true;
+                        selectedIndex = 2;
+                        isLoading = true;
+                        getFiles('صوتيات').then((value) {
+                          var audiosRes = value;
+                          getFiles('كتب').then((value) {
+                            var booksRes = value;
+                            if (audiosRes != null && booksRes != null) {
+                              audios = audiosRes;
+                              books = booksRes;
+                              setState(() {});
+                              pageController
+                                  .animateToPage(
+                                    2,
+                                    duration: const Duration(milliseconds: 150),
+                                    curve: Curves.linear,
+                                  )
+                                  .then((value) {
+                                    Constant.isThereLoading = false;
+                                    isLoading = false;
+                                    context.read<HomeBloc>().add(InitEvent());
+                                  });
+                            }
+                          });
+                        });
+                      }
+                    } else if (state is VideoPageOpened) {
+                      isLoading = true;
+                      selectedIndex = 3;
+                      if (!Constant.isThereLoading) {
+                        getFiles('كورسات').then((value) {
+                          if (value != null) {
+                            courses = value;
                             setState(() {});
                             pageController
                                 .animateToPage(
-                                  1,
+                                  3,
                                   duration: const Duration(milliseconds: 150),
                                   curve: Curves.linear,
                                 )
                                 .then((value) {
-                                  isLoading = false;
                                   Constant.isThereLoading = false;
+                                  isLoading = false;
                                   context.read<HomeBloc>().add(InitEvent());
                                 });
                           }
                         });
                       }
-                    });
-                  } else {
-                    pageController
-                        .animateToPage(
-                          1,
-                          duration: const Duration(milliseconds: 150),
-                          curve: Curves.linear,
-                        )
-                        .then((value) {
-                          isLoading = false;
-                          Constant.isThereLoading = false;
-                          context.read<HomeBloc>().add(InitEvent());
-                        });
-                  }
-                }
-              } else if (state is BookAudioPageOpened) {
-                if (!Constant.isThereLoading) {
-                  Constant.isThereLoading = true;
-                  selectedIndex = 2;
-                  isLoading = true;
-                  getFiles('صوتيات').then((value) {
-                    var audiosRes = value;
-                    getFiles('كتب').then((value) {
-                      var booksRes = value;
-                      if (audiosRes != null && booksRes != null) {
-                        audios = audiosRes;
-                        books = booksRes;
-                        setState(() {});
-                        pageController
-                            .animateToPage(
-                              2,
-                              duration: const Duration(milliseconds: 150),
-                              curve: Curves.linear,
-                            )
-                            .then((value) {
-                              Constant.isThereLoading = false;
-                              isLoading = false;
-                              context.read<HomeBloc>().add(InitEvent());
-                            });
-                      }
-                    });
-                  });
-                }
-              } else if (state is VideoPageOpened) {
-                isLoading = true;
-                selectedIndex = 3;
-                if (!Constant.isThereLoading) {
-                  getFiles('كورسات').then((value) {
-                    if (value != null) {
-                      courses = value;
-                      setState(() {});
-                      pageController
-                          .animateToPage(
-                            3,
-                            duration: const Duration(milliseconds: 150),
-                            curve: Curves.linear,
-                          )
-                          .then((value) {
-                            Constant.isThereLoading = false;
-                            isLoading = false;
-                            context.read<HomeBloc>().add(InitEvent());
-                          });
                     }
-                  });
-                }
-              }
-              return CustomBottomNavigationBar(
-                selectedIndex: isLoading
-                    ? selectedIndex
-                    : pageController.page?.floor() ?? 0,
-                isLoading: isLoading,
-                pageController: pageController,
-                backgroundColor: AppColors.appBarColor,
-                selectedColor: AppColors.lightBrownColor,
-                unSelectedColor: AppColors.bottomSheetUnSelectedColor,
-                items: [
-                  CustomBottomNavigationBarItem(
-                    icon: Mnb.home,
-                    onTap: () async {
-                      if (!Constant.isThereLoading) {
-                        pageController.animateToPage(
-                          0,
-                          duration: const Duration(milliseconds: 150),
-                          curve: Curves.linear,
-                        );
-                        return true;
-                      }
-                      return false;
-                    },
-                  ),
-                  CustomBottomNavigationBarItem(
-                    icon: Mnb.task_square,
-                    onTap: () async {
-                      if (!Constant.isThereLoading) {
-                        if (Constant.student != null) {
-                          Constant.isThereLoading = true;
-                          List? temp = await getStudentDailyTrack(context);
-                          if (temp == null) {
-                            setState(() {});
-                          } else {
-                            Map? temp1 = await getStudentWeaklyTrack(context);
-                            if (temp1 != null) {
-                              studentDailyTrack = temp;
-                              studentWeaklyTrack = temp1;
-                              setState(() {});
-                              await pageController.animateToPage(
-                                1,
+                    return CustomBottomNavigationBar(
+                      selectedIndex: isLoading
+                          ? selectedIndex
+                          : pageController.page?.floor() ?? 0,
+                      isLoading: isLoading,
+                      pageController: pageController,
+                      backgroundColor: AppColors.appBarColor,
+                      selectedColor: AppColors.lightBrownColor,
+                      unSelectedColor: AppColors.bottomSheetUnSelectedColor,
+                      items: [
+                        CustomBottomNavigationBarItem(
+                          icon: Mnb.home,
+                          onTap: () async {
+                            if (!Constant.isThereLoading) {
+                              pageController.animateToPage(
+                                0,
                                 duration: const Duration(milliseconds: 150),
                                 curve: Curves.linear,
                               );
-                              Constant.isThereLoading = false;
                               return true;
-                            } else {
-                              Constant.isThereLoading = false;
-                              return false;
                             }
-                          }
-                        } else {
-                          await pageController.animateToPage(
-                            1,
-                            duration: const Duration(milliseconds: 150),
-                            curve: Curves.linear,
-                          );
-                          return true;
-                        }
-                      }
-                      Constant.isThereLoading = false;
-                      return false;
-                    },
-                  ),
-                  CustomBottomNavigationBarItem(
-                    icon: Mnb.book_,
-                    onTap: () async {
-                      if (!Constant.isThereLoading) {
-                        var audiosRes = await getFiles('صوتيات');
-                        var booksRes = await getFiles('كتب');
-                        if (audiosRes != null && booksRes != null) {
-                          audios = audiosRes;
-                          books = booksRes;
-                          setState(() {});
-                          pageController.animateToPage(
-                            2,
-                            duration: const Duration(milliseconds: 150),
-                            curve: Curves.linear,
-                          );
-                          return true;
-                        } else {
-                          return false;
-                        }
-                      }
-                      return false;
-                    },
-                  ),
-                  CustomBottomNavigationBarItem(
-                    icon: Mnb.monitor,
-                    onTap: () async {
-                      if (!Constant.isThereLoading) {
-                        var res = await getFiles('كورسات');
-                        if (res != null) {
-                          courses = res;
-                          setState(() {});
-                          pageController.animateToPage(
-                            3,
-                            duration: const Duration(milliseconds: 150),
-                            curve: Curves.linear,
-                          );
-                          return true;
-                        } else {
-                          return false;
-                        }
-                      }
-                      return false;
-                    },
-                  ),
-                ],
-              );
-            },
-          ),
+                            return false;
+                          },
+                        ),
+                        CustomBottomNavigationBarItem(
+                          icon: Mnb.task_square,
+                          onTap: () async {
+                            if (!Constant.isThereLoading) {
+                              if (Constant.student != null) {
+                                Constant.isThereLoading = true;
+                                List? temp = await getStudentDailyTrack(
+                                  context,
+                                );
+                                if (temp == null) {
+                                  setState(() {});
+                                } else {
+                                  Map? temp1 = await getStudentWeaklyTrack(
+                                    context,
+                                  );
+                                  if (temp1 != null) {
+                                    studentDailyTrack = temp;
+                                    studentWeaklyTrack = temp1;
+                                    setState(() {});
+                                    await pageController.animateToPage(
+                                      1,
+                                      duration: const Duration(
+                                        milliseconds: 150,
+                                      ),
+                                      curve: Curves.linear,
+                                    );
+                                    Constant.isThereLoading = false;
+                                    return true;
+                                  } else {
+                                    Constant.isThereLoading = false;
+                                    return false;
+                                  }
+                                }
+                              } else {
+                                await pageController.animateToPage(
+                                  1,
+                                  duration: const Duration(milliseconds: 150),
+                                  curve: Curves.linear,
+                                );
+                                return true;
+                              }
+                            }
+                            Constant.isThereLoading = false;
+                            return false;
+                          },
+                        ),
+                        CustomBottomNavigationBarItem(
+                          icon: Mnb.book_,
+                          onTap: () async {
+                            if (!Constant.isThereLoading) {
+                              var audiosRes = await getFiles('صوتيات');
+                              var booksRes = await getFiles('كتب');
+                              if (audiosRes != null && booksRes != null) {
+                                audios = audiosRes;
+                                books = booksRes;
+                                setState(() {});
+                                pageController.animateToPage(
+                                  2,
+                                  duration: const Duration(milliseconds: 150),
+                                  curve: Curves.linear,
+                                );
+                                return true;
+                              } else {
+                                return false;
+                              }
+                            }
+                            return false;
+                          },
+                        ),
+                        CustomBottomNavigationBarItem(
+                          icon: Mnb.monitor,
+                          onTap: () async {
+                            if (!Constant.isThereLoading) {
+                              var res = await getFiles('كورسات');
+                              if (res != null) {
+                                courses = res;
+                                setState(() {});
+                                pageController.animateToPage(
+                                  3,
+                                  duration: const Duration(milliseconds: 150),
+                                  curve: Curves.linear,
+                                );
+                                return true;
+                              } else {
+                                return false;
+                              }
+                            }
+                            return false;
+                          },
+                        ),
+                      ],
+                    );
+                  },
+                ),
         ),
       ),
     );

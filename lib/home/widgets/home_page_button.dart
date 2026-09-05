@@ -69,12 +69,20 @@ class _HomePageButtonState extends State<HomePageButton> {
                 : Icon(widget.iconData, size: 22.sp, color: Colors.white),
           ),
           SizedBox(height: 5.h),
-          Text(
-            widget.text,
-            style: TextStyle(
-              color: AppColors.lightBrownColor,
-              fontSize: 14.sp,
-              fontFamily: 'Almarai',
+          SizedBox(
+            width: widget.width + 26.w,
+            height: 34.h,
+            child: Text(
+              widget.text,
+              textAlign: TextAlign.center,
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(
+                color: AppColors.lightBrownColor,
+                fontSize: 13.sp,
+                height: 1.2,
+                fontFamily: 'Almarai',
+              ),
             ),
           ),
         ],

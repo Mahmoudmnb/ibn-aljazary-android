@@ -403,7 +403,7 @@ Future<Map?> getStudentWeaklyTrack(BuildContext context) async {
       },
     );
     if (res.statusCode == 200) {
-      temp = jsonDecode(res.body)['sum'];
+      temp = jsonDecode(res.body);
     } else if (res.statusCode == 405 || res.statusCode == 401) {
       await removeUnauthorizedUser();
     } else {
@@ -411,6 +411,42 @@ Future<Map?> getStudentWeaklyTrack(BuildContext context) async {
     }
   }, context);
   return temp;
+}
+
+Future<bool> updateStudentTrackHomework({
+  required BuildContext context,
+  required int trackId,
+  required int studentId,
+  required String homework,
+}) async {
+  bool isSuccess = false;
+  await checkInternet(() async {
+    var res = await http.put(
+      Uri.parse(Constant.updateStudentTrackHomework),
+      body: jsonEncode({
+        'id': trackId,
+        'studentId': studentId,
+        'homework': homework,
+      }),
+      headers: {
+        "Content-Type": "application/json",
+        "Accept": "application/json",
+        "Authorization":
+            "Bearer ${await (getToken(Constant.student!.id.toString()))}",
+      },
+    );
+    if (res.statusCode == 201) {
+      Toast.show('تم حفظ المعاهدة المنزلية', duration: Toast.lengthLong);
+      isSuccess = true;
+    } else if (res.statusCode == 405 || res.statusCode == 401) {
+      await removeUnauthorizedUser();
+    } else {
+      final message =
+          jsonDecode(res.body)['message'] ?? 'خطأ غير معروف حاول ثانية';
+      Toast.show(message.toString(), duration: Toast.lengthLong);
+    }
+  }, context);
+  return isSuccess;
 }
 
 Future<void> updateAdvertingImages(String images) async {
