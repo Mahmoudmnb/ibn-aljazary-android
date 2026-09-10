@@ -19,7 +19,6 @@ class StudentDailyTrackModel {
   final List<Progress> hadithProgress;
   final String className;
   final String nots;
-  final String homework;
 
   StudentDailyTrackModel({
     required this.id,
@@ -37,7 +36,6 @@ class StudentDailyTrackModel {
     required this.hadithProgress,
     required this.className,
     required this.nots,
-    required this.homework,
     required this.quranProject,
   });
 
@@ -51,7 +49,6 @@ class StudentDailyTrackModel {
         id: _nullableIntValue(json["id"]),
         quranProject: _stringValue(json['quranProjectName']),
         nots: _stringValue(json['nots']),
-        homework: _stringValue(json['homework']),
         date: _dateValue(json["trackDate"]),
         withOrder: _boolIntValue(json["withOrder"]),
         withoutOrder: _boolIntValue(json["withoutOrder"]),
@@ -115,7 +112,6 @@ class StudentDailyTrackModel {
   Map<String, dynamic> toJson() => {
     "id": id,
     'nots': nots,
-    'homework': homework,
     "trackDate":
         "${date.year.toString().padLeft(4, '0')}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}",
     "withOrder": withOrder,

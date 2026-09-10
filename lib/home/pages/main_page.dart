@@ -22,6 +22,7 @@ import 'courses_page.dart';
 import 'home_page.dart';
 import 'library_page.dart';
 import 'student_daily_track_page.dart';
+import 'student_homeworks_page.dart';
 import 'student_institute_actions_page.dart';
 
 class MainPage extends StatefulWidget {
@@ -139,6 +140,18 @@ class _MainPageState extends State<MainPage> {
         homeBloc.add(OpenRecallsPage());
       } else if (message.data['page'] == 'المتابعة اليومية') {
         homeBloc.add(OpenDailyTrackPage());
+      } else if (message.data['page'] == 'التعاهد المنزلي') {
+        await pageController.animateToPage(
+          0,
+          duration: const Duration(milliseconds: 150),
+          curve: Curves.linear,
+        );
+        if (!mounted) {
+          return;
+        }
+        navigator.push(
+          MaterialPageRoute(builder: (context) => const StudentHomeworksPage()),
+        );
       } else if (message.data['page'] == 'صوتيات' ||
           message.data['page'] == 'كتب') {
         homeBloc.add(OpenBookAudioPage());

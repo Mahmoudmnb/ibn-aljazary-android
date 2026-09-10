@@ -9,12 +9,22 @@ class HomePageButton extends StatefulWidget {
   final Color backgroundColor;
   final double width;
   final double height;
+  final double? iconSize;
+  final double? labelFontSize;
+  final double? labelHeight;
+  final double? labelWidth;
+  final double gap;
   final IconData iconData;
   final bool isLoading;
   const HomePageButton({
     super.key,
     this.backgroundColor = Colors.white,
     this.isLoading = false,
+    this.iconSize,
+    this.labelFontSize,
+    this.labelHeight,
+    this.labelWidth,
+    this.gap = 5,
     required this.iconData,
     required this.height,
     required this.width,
@@ -66,12 +76,16 @@ class _HomePageButtonState extends State<HomePageButton> {
                 ? const Center(
                     child: CircularProgressIndicator(color: Colors.white),
                   )
-                : Icon(widget.iconData, size: 22.sp, color: Colors.white),
+                : Icon(
+                    widget.iconData,
+                    size: (widget.iconSize ?? 22).sp,
+                    color: Colors.white,
+                  ),
           ),
-          SizedBox(height: 5.h),
+          SizedBox(height: widget.gap.h),
           SizedBox(
-            width: widget.width + 26.w,
-            height: 34.h,
+            width: widget.labelWidth ?? widget.width + 26.w,
+            height: (widget.labelHeight ?? 34).h,
             child: Text(
               widget.text,
               textAlign: TextAlign.center,
@@ -79,7 +93,7 @@ class _HomePageButtonState extends State<HomePageButton> {
               overflow: TextOverflow.ellipsis,
               style: TextStyle(
                 color: AppColors.lightBrownColor,
-                fontSize: 13.sp,
+                fontSize: (widget.labelFontSize ?? 13).sp,
                 height: 1.2,
                 fontFamily: 'Almarai',
               ),

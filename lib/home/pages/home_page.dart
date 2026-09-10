@@ -1,13 +1,10 @@
 import 'dart:async';
-import 'dart:convert';
 import 'dart:developer';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:http/http.dart' as http;
-import 'package:toast/toast.dart';
 
 import '../../auth/methods/auth_page_methods.dart';
 import '../../auth/pages/splash_screen.dart';
@@ -19,10 +16,10 @@ import '../methods/home_page_methods.dart';
 import '../widgets/drawer.dart';
 import '../widgets/home_page_app_bar.dart';
 import '../widgets/widgets.dart';
-import 'about_institute.dart';
 import 'add_student_prays_page.dart';
 import 'communication_page.dart';
 import 'login_required_page.dart';
+import 'student_homeworks_page.dart';
 import 'student_institute_actions_page.dart';
 
 class HomePage extends StatefulWidget {
@@ -48,6 +45,28 @@ class _HomePageState extends State<HomePage> {
   late Stream<int> stream;
   int maxImageLen = 0;
   bool isAboutInstituteLoading = false;
+
+  Widget _buildHomeActionButton({
+    required String text,
+    required IconData iconData,
+    required Future<void> Function() onTap,
+    bool isLoading = false,
+  }) {
+    return HomePageButton(
+      width: 42.w,
+      height: 42.h,
+      labelWidth: 68.w,
+      labelHeight: 30.h,
+      labelFontSize: 10.5,
+      iconSize: 19,
+      gap: 3,
+      isLoading: isLoading,
+      iconData: iconData,
+      backgroundColor: AppColors.green2,
+      onTap: onTap,
+      text: text,
+    );
+  }
 
   @override
   void didUpdateWidget(covariant HomePage oldWidget) {
@@ -114,41 +133,20 @@ class _HomePageState extends State<HomePage> {
               _scaffoldKey.currentState!.openEndDrawer();
               Constant.isThereLoading = true;
               isAboutInstituteLoading = true;
-              checkInternet(() async {
-                http.Response res = await http.get(
-                  Uri.parse(Constant.getAboutText),
-                  headers: {
-                    "Content-Type": "application/json",
-                    "Accept": "application/json",
-                    "Authorization":
-                        "Bearer ${await (getToken(Constant.student!.id.toString()))}",
-                  },
-                );
-                if (res.statusCode == 200) {
-                  isAboutInstituteLoading = false;
-                  Constant.isThereLoading = false;
-                  context.read<HomeBloc>().add(InitEvent());
-                  Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (context) => AboutInstitute(
-                        aboutText: jsonDecode(res.body)['text'],
-                      ),
-                    ),
-                  );
-                  _scaffoldKey.currentState!.closeEndDrawer();
-                } else if (res.statusCode == 405 || res.statusCode == 401) {
-                  await removeUnauthorizedUser();
-                } else {
-                  isAboutInstituteLoading = false;
-                  Constant.isThereLoading = false;
-                  context.read<HomeBloc>().add(InitEvent());
-                  ToastContext().init(context);
-                  Toast.show(
-                    'خطأ غير معروف حاول ثانية',
-                    duration: Toast.lengthLong,
-                  );
+              openAboutInstitutePage(
+                context: context,
+                scaffoldKey: _scaffoldKey,
+              ).then((statusCode) {
+                if (!mounted) {
+                  return;
                 }
-              }, context);
+                isAboutInstituteLoading = false;
+                Constant.isThereLoading = false;
+                context.read<HomeBloc>().add(InitEvent());
+                if (statusCode == 405 || statusCode == 401) {
+                  setState(() {});
+                }
+              });
             }
           }
           return RightDrawer(
@@ -173,40 +171,6 @@ class _HomePageState extends State<HomePage> {
                 onTap: () async {
                   if (!Constant.isThereLoading) {
                     Constant.isThereLoading = true;
-                    int code = await getStudentTest(
-                      context: context,
-                      testType: 'أوقاف',
-                    );
-                    _scaffoldKey.currentState?.closeEndDrawer();
-                    Constant.isThereLoading = false;
-                    if (code == 401) {
-                      setState(() {});
-                    }
-                  }
-                },
-                text: 'سبر الأوقاف',
-              ),
-              DrawerItem(
-                onTap: () async {
-                  if (!Constant.isThereLoading) {
-                    Constant.isThereLoading = true;
-                    int code = await getStudentTest(
-                      context: context,
-                      testType: 'منهج',
-                    );
-                    _scaffoldKey.currentState?.closeEndDrawer();
-                    Constant.isThereLoading = false;
-                    if (code == 401) {
-                      setState(() {});
-                    }
-                  }
-                },
-                text: 'علامات المنهج',
-              ),
-              DrawerItem(
-                onTap: () async {
-                  if (!Constant.isThereLoading) {
-                    Constant.isThereLoading = true;
                     int code = await getStudentGrades(context);
                     _scaffoldKey.currentState?.closeEndDrawer();
                     Constant.isThereLoading = false;
@@ -218,51 +182,23 @@ class _HomePageState extends State<HomePage> {
                 text: 'الشهادات',
               ),
               DrawerItem(
+                isLoading: isAboutInstituteLoading,
                 onTap: () async {
                   if (!Constant.isThereLoading) {
-                    await checkInternet(() async {
-                      http.Response res = await http.get(
-                        Uri.parse(Constant.getAboutText),
-                        headers: {
-                          "Content-Type": "application/json",
-                          "Accept": "application/json",
-                          "Authorization":
-                              "Bearer ${await (getToken(Constant.student!.id.toString()))}",
-                        },
-                      );
-                      if (res.statusCode == 200) {
-                        isAboutInstituteLoading = false;
-                        Constant.isThereLoading = false;
-                        context.read<HomeBloc>().add(InitEvent());
-                        Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (context) => AboutInstitute(
-                              aboutText: jsonDecode(res.body)['text'],
-                            ),
-                          ),
-                        );
-                        _scaffoldKey.currentState!.closeEndDrawer();
-                      } else if (res.statusCode == 405 ||
-                          res.statusCode == 401) {
-                        await removeUnauthorizedUser();
-                        setState(() {});
-                      } else {
-                        isAboutInstituteLoading = false;
-                        Constant.isThereLoading = false;
-                        context.read<HomeBloc>().add(InitEvent());
-                        ToastContext().init(context);
-                        Toast.show(
-                          'خطأ غير معروف حاول ثانية',
-                          duration: Toast.lengthLong,
-                        );
-                      }
-                    }, context);
+                    Constant.isThereLoading = true;
+                    int? statusCode = await openAboutInstitutePage(
+                      context: context,
+                      scaffoldKey: _scaffoldKey,
+                    );
+                    Constant.isThereLoading = false;
+                    if ((statusCode == 405 || statusCode == 401) && mounted) {
+                      setState(() {});
+                    }
                   }
                 },
                 text: 'نبذة عن المعهد',
               ),
               DrawerItem(
-                isLoading: isAboutInstituteLoading,
                 onTap: () async {
                   if (!Constant.isThereLoading) {
                     Navigator.of(context).push(
@@ -351,25 +287,25 @@ class _HomePageState extends State<HomePage> {
               }
             },
           ),
-          SingleChildScrollView(
+          Padding(
             padding: EdgeInsets.symmetric(horizontal: 16.w),
             child: Constant.student != null
                 ? Column(
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
-                      SizedBox(height: 15.h),
+                      SizedBox(height: 10.h),
                       Text(
                         '${Constant.student!.fName} ${Constant.student!.lName}',
                         style: TextStyle(
                           color: AppColors.brownColor,
-                          fontSize: 18.sp,
+                          fontSize: 16.sp,
                           fontFamily: 'Almarai',
                           fontWeight: FontWeight.w700,
                         ),
                       ),
-                      SizedBox(height: 8.h),
+                      SizedBox(height: 4.h),
                       SizedBox(
-                        height: 25.h,
+                        height: 21.h,
                         child: Constant.student!.className.isEmpty
                             ? SizedBox.shrink()
                             : Text(
@@ -377,12 +313,12 @@ class _HomePageState extends State<HomePage> {
                                 textDirection: TextDirection.rtl,
                                 style: TextStyle(
                                   color: AppColors.brownColor,
-                                  fontSize: 15.sp,
+                                  fontSize: 13.sp,
                                   fontFamily: 'Almarai',
                                 ),
                               ),
                       ),
-                      SizedBox(height: 15.h),
+                      SizedBox(height: 10.h),
                       FutureBuilder(
                         future: getImages,
                         builder: (context, snapshot) {
@@ -397,7 +333,7 @@ class _HomePageState extends State<HomePage> {
                                   builder: (context, data) {
                                     return Container(
                                       width: 275.w,
-                                      height: 120.h,
+                                      height: 130.h,
                                       decoration: BoxDecoration(
                                         color: const Color(0xffEBEBEB),
                                         borderRadius: BorderRadius.circular(
@@ -473,10 +409,10 @@ class _HomePageState extends State<HomePage> {
                                 );
                         },
                       ),
-                      SizedBox(height: 15.h),
+                      SizedBox(height: 10.h),
                       Container(
                         width: 291.w,
-                        height: 54.h,
+                        height: 44.h,
                         decoration: BoxDecoration(
                           color: Colors.white,
                           borderRadius: BorderRadius.circular(16.sp),
@@ -497,23 +433,23 @@ class _HomePageState extends State<HomePage> {
                                 color: AppColors.brownColor,
                                 fontWeight: FontWeight.w700,
                                 fontFamily: 'Almarai',
-                                fontSize: 14.sp,
+                                fontSize: 12.sp,
                               ),
                             ),
-                            SizedBox(width: 12.w),
+                            SizedBox(width: 10.w),
                             Icon(
                               Icons.star,
                               color: Color(0xffF6E862),
-                              size: 25.sp,
+                              size: 22.sp,
                             ),
-                            SizedBox(width: 16.w),
+                            SizedBox(width: 14.w),
                           ],
                         ),
                       ),
-                      SizedBox(height: 16.h),
+                      SizedBox(height: 10.h),
                       Container(
                         width: 300.w,
-                        height: 230.h,
+                        height: 270.h,
                         decoration: BoxDecoration(
                           color: Colors.white,
                           borderRadius: BorderRadius.circular(16.sp),
@@ -521,7 +457,7 @@ class _HomePageState extends State<HomePage> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
-                            SizedBox(height: 20.h),
+                            SizedBox(height: 12.h),
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                               children: [
@@ -544,12 +480,9 @@ class _HomePageState extends State<HomePage> {
                                         });
                                       }
                                     }
-                                    return HomePageButton(
-                                      width: 55.w,
-                                      height: 55.h,
+                                    return _buildHomeActionButton(
                                       isLoading: isLoading,
                                       iconData: Mnb.task_square,
-                                      backgroundColor: AppColors.green2,
                                       onTap: () async {
                                         if (!Constant.isThereLoading) {
                                           Constant.isThereLoading = true;
@@ -567,12 +500,65 @@ class _HomePageState extends State<HomePage> {
                                     );
                                   },
                                 ),
-                                SizedBox(width: 15.w),
-                                HomePageButton(
-                                  width: 60.w,
-                                  height: 60.h,
+                                _buildHomeActionButton(
+                                  iconData: Icons.task_alt_outlined,
+                                  onTap: () async {
+                                    if (!Constant.isThereLoading) {
+                                      Constant.isThereLoading = true;
+                                      int code = await getStudentTest(
+                                        context: context,
+                                        testType: 'أوقاف',
+                                      );
+                                      if (code == 401) {
+                                        setState(() {});
+                                      }
+                                      Constant.isThereLoading = false;
+                                    }
+                                  },
+                                  text: 'سبر الأوقاف',
+                                ),
+                                _buildHomeActionButton(
+                                  iconData: Icons.menu_book_outlined,
+                                  onTap: () async {
+                                    if (!Constant.isThereLoading) {
+                                      Constant.isThereLoading = true;
+                                      int code = await getStudentTest(
+                                        context: context,
+                                        testType: 'منهج',
+                                      );
+                                      if (code == 401) {
+                                        setState(() {});
+                                      }
+                                      Constant.isThereLoading = false;
+                                    }
+                                  },
+                                  text: 'علامات المنهج',
+                                ),
+                              ],
+                            ),
+                            SizedBox(height: 3.h),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: [
+                                _buildHomeActionButton(
+                                  iconData: Icons.home_work_outlined,
+                                  onTap: () async {
+                                    if (!Constant.isThereLoading) {
+                                      Constant.isThereLoading = true;
+                                      await Navigator.of(context).push(
+                                        MaterialPageRoute(
+                                          builder: (context) =>
+                                              const StudentHomeworksPage(),
+                                        ),
+                                      );
+                                      Constant.isThereLoading = false;
+                                      setState(() {});
+                                    }
+                                  },
+                                  text: 'التعاهد المنزلي',
+                                ),
+                                _buildHomeActionButton(
                                   iconData: Icons.volunteer_activism_outlined,
-                                  backgroundColor: AppColors.green2,
                                   onTap: () async {
                                     if (!Constant.isThereLoading) {
                                       Constant.isThereLoading = true;
@@ -587,12 +573,8 @@ class _HomePageState extends State<HomePage> {
                                   },
                                   text: 'التبرعات',
                                 ),
-                                SizedBox(width: 15.w),
-                                HomePageButton(
-                                  width: 60.w,
-                                  height: 60.h,
+                                _buildHomeActionButton(
                                   iconData: Icons.fact_check_outlined,
-                                  backgroundColor: AppColors.green2,
                                   onTap: () async {
                                     if (!Constant.isThereLoading) {
                                       Constant.isThereLoading = true;
@@ -610,15 +592,12 @@ class _HomePageState extends State<HomePage> {
                                 ),
                               ],
                             ),
-                            SizedBox(height: 5.h),
+                            SizedBox(height: 3.h),
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                               children: [
-                                HomePageButton(
-                                  width: 60.w,
-                                  height: 60.h,
+                                _buildHomeActionButton(
                                   iconData: Icons.event_available_outlined,
-                                  backgroundColor: AppColors.green2,
                                   onTap: () async {
                                     if (!Constant.isThereLoading) {
                                       Constant.isThereLoading = true;
@@ -634,7 +613,6 @@ class _HomePageState extends State<HomePage> {
                                   },
                                   text: 'نشاطات المعهد',
                                 ),
-                                SizedBox(width: 15.w),
                                 BlocBuilder<HomeBloc, HomeState>(
                                   builder: (context, state) {
                                     bool isLoading = false;
@@ -653,12 +631,9 @@ class _HomePageState extends State<HomePage> {
                                         });
                                       }
                                     }
-                                    return HomePageButton(
-                                      width: 60.w,
-                                      height: 60.h,
+                                    return _buildHomeActionButton(
                                       isLoading: isLoading,
                                       iconData: Mnb.message,
-                                      backgroundColor: AppColors.green2,
                                       onTap: () async {
                                         if (!Constant.isThereLoading) {
                                           Constant.isThereLoading = true;
@@ -675,12 +650,8 @@ class _HomePageState extends State<HomePage> {
                                     );
                                   },
                                 ),
-                                SizedBox(width: 15.w),
-                                HomePageButton(
-                                  width: 60.w,
-                                  height: 60.h,
+                                _buildHomeActionButton(
                                   iconData: Mnb.calendar,
-                                  backgroundColor: AppColors.green2,
                                   onTap: () async {
                                     if (!Constant.isThereLoading) {
                                       Constant.isThereLoading = true;

@@ -110,9 +110,9 @@ class Constant {
   static List<AppNotification> notifications = [];
   static bool isThereLoading = false;
 
-  static const String domainName = 'http://10.0.2.2:8002';
+  // static const String domainName = 'http://10.0.2.2:8002';
 
-  // static const String domainName = 'https://ibn-aljazary.mahmoudbannan.com';
+  static const String domainName = 'https://ibn-aljazary.mahmoudbannan.com';
 
   static const String baseUrl = '$domainName/api';
   static const String getAboutText = '$baseUrl/getAboutText';
@@ -137,8 +137,8 @@ class Constant {
   static const String getStudentDailyTrack = '$baseUrl/getStudentDailyProgress';
   static const String getStudentDailyProgress =
       '$baseUrl/getStudentDailyProgress';
-  static const String updateStudentTrackHomework =
-      '$baseUrl/updateStudentTrackHomework';
+  static const String getStudentHomeworks = '$baseUrl/getStudentHomeworks';
+  static const String saveStudentHomework = '$baseUrl/saveStudentHomework';
   static const String getAllCollections = '$baseUrl/getAllCollections';
   static const String exportFileDataBase = '$baseUrl/exportFileDataBase';
   static const String getNewFiles = '$baseUrl/getNewFiles';

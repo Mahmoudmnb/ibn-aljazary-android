@@ -16,6 +16,7 @@ import '../../auth/models/student_model.dart';
 import '../../core/constant.dart';
 import '../bloc/home_bloc.dart';
 import '../models/app_notification.dart';
+import '../pages/about_institute.dart';
 import '../pages/profile_page.dart';
 import '../pages/student_donation_page.dart';
 import '../pages/student_grades_page.dart';
@@ -76,6 +77,43 @@ Future<Map?> getBookAudiosCourses(BuildContext context) async {
     }
   }, context);
   return temp;
+}
+
+Future<int?> openAboutInstitutePage({
+  required BuildContext context,
+  GlobalKey<ScaffoldState>? scaffoldKey,
+}) async {
+  int? statusCode;
+  await checkInternet(() async {
+    http.Response res = await http.get(
+      Uri.parse(Constant.getAboutText),
+      headers: {
+        "Content-Type": "application/json",
+        "Accept": "application/json",
+        "Authorization":
+            "Bearer ${await (getToken(Constant.student!.id.toString()))}",
+      },
+    );
+    statusCode = res.statusCode;
+    if (!context.mounted) {
+      return;
+    }
+    if (res.statusCode == 200) {
+      Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (context) =>
+              AboutInstitute(aboutText: jsonDecode(res.body)['text']),
+        ),
+      );
+      scaffoldKey?.currentState?.closeEndDrawer();
+    } else if (res.statusCode == 405 || res.statusCode == 401) {
+      await removeUnauthorizedUser();
+    } else {
+      ToastContext().init(context);
+      Toast.show('خطأ غير معروف حاول ثانية', duration: Toast.lengthLong);
+    }
+  }, context);
+  return statusCode;
 }
 
 Future<List?> getFiles(String type) async {
@@ -413,19 +451,44 @@ Future<Map?> getStudentWeaklyTrack(BuildContext context) async {
   return temp;
 }
 
-Future<bool> updateStudentTrackHomework({
+Future<List?> getStudentHomeworks(BuildContext context) async {
+  List? temp;
+  await checkInternet(() async {
+    http.Response res = await http.get(
+      Uri.parse('${Constant.getStudentHomeworks}/${Constant.student!.id}'),
+      headers: {
+        "Content-Type": "application/json",
+        "Accept": "application/json",
+        "Authorization":
+            "Bearer ${await (getToken(Constant.student!.id.toString()))}",
+      },
+    );
+    if (res.statusCode == 200) {
+      temp = jsonDecode(res.body)['data'];
+    } else if (res.statusCode == 405 || res.statusCode == 401) {
+      await removeUnauthorizedUser();
+    } else {
+      Toast.show('خطأ غير معروف حاول ثانية', duration: Toast.lengthLong);
+    }
+  }, context);
+  return temp;
+}
+
+Future<Map?> saveStudentHomework({
   required BuildContext context,
-  required int trackId,
+  required int? homeworkId,
   required int studentId,
+  required String homeworkDate,
   required String homework,
 }) async {
-  bool isSuccess = false;
+  Map? data;
   await checkInternet(() async {
-    var res = await http.put(
-      Uri.parse(Constant.updateStudentTrackHomework),
+    var res = await http.post(
+      Uri.parse(Constant.saveStudentHomework),
       body: jsonEncode({
-        'id': trackId,
+        if (homeworkId != null) 'id': homeworkId,
         'studentId': studentId,
+        'homeworkDate': homeworkDate,
         'homework': homework,
       }),
       headers: {
@@ -437,7 +500,7 @@ Future<bool> updateStudentTrackHomework({
     );
     if (res.statusCode == 201) {
       Toast.show('تم حفظ المعاهدة المنزلية', duration: Toast.lengthLong);
-      isSuccess = true;
+      data = jsonDecode(res.body)['data'];
     } else if (res.statusCode == 405 || res.statusCode == 401) {
       await removeUnauthorizedUser();
     } else {
@@ -446,7 +509,7 @@ Future<bool> updateStudentTrackHomework({
       Toast.show(message.toString(), duration: Toast.lengthLong);
     }
   }, context);
-  return isSuccess;
+  return data;
 }
 
 Future<void> updateAdvertingImages(String images) async {

@@ -65,40 +65,6 @@ class _LibraryPageState extends State<LibraryPage> {
             onTap: () async {
               if (!Constant.isThereLoading) {
                 Constant.isThereLoading = true;
-                int code = await getStudentTest(
-                  context: context,
-                  testType: 'أوقاف',
-                );
-                _scaffoldKey.currentState?.closeEndDrawer();
-                Constant.isThereLoading = false;
-                if (code == 401) {
-                  setState(() {});
-                }
-              }
-            },
-            text: 'سبر الأوقاف',
-          ),
-          DrawerItem(
-            onTap: () async {
-              if (!Constant.isThereLoading) {
-                Constant.isThereLoading = true;
-                int code = await getStudentTest(
-                  context: context,
-                  testType: 'منهج',
-                );
-                _scaffoldKey.currentState?.closeEndDrawer();
-                Constant.isThereLoading = false;
-                if (code == 401) {
-                  setState(() {});
-                }
-              }
-            },
-            text: 'علامات المنهج',
-          ),
-          DrawerItem(
-            onTap: () async {
-              if (!Constant.isThereLoading) {
-                Constant.isThereLoading = true;
                 int code = await getStudentGrades(context);
                 _scaffoldKey.currentState?.closeEndDrawer();
                 Constant.isThereLoading = false;
@@ -108,6 +74,22 @@ class _LibraryPageState extends State<LibraryPage> {
               }
             },
             text: 'الشهادات',
+          ),
+          DrawerItem(
+            onTap: () async {
+              if (!Constant.isThereLoading) {
+                Constant.isThereLoading = true;
+                int? statusCode = await openAboutInstitutePage(
+                  context: context,
+                  scaffoldKey: _scaffoldKey,
+                );
+                Constant.isThereLoading = false;
+                if ((statusCode == 405 || statusCode == 401) && mounted) {
+                  setState(() {});
+                }
+              }
+            },
+            text: 'نبذة عن المعهد',
           ),
           DrawerItem(
             onTap: () async {

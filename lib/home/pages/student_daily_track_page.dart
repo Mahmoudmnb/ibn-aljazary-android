@@ -37,78 +37,9 @@ class StudentDailyTrackPage extends StatefulWidget {
 class _StudentDailyTrackPageState extends State<StudentDailyTrackPage> {
   late DateTime date;
   late List studentTracks;
-  late TextEditingController homeworkCon;
-  final ScrollController _scrollController = ScrollController();
-  final FocusNode _homeworkFocusNode = FocusNode();
   StudentDailyTrackModel? studentTrackModel;
   bool isWeaklyTrack = false;
-  bool isSavingHomework = false;
-  String _savedHomework = '';
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-
-  void _scrollToHomeworkEditor() {
-    Future.delayed(const Duration(milliseconds: 280), () {
-      if (!_scrollController.hasClients || !mounted) {
-        return;
-      }
-
-      _scrollController.animateTo(
-        _scrollController.position.maxScrollExtent,
-        duration: const Duration(milliseconds: 300),
-        curve: Curves.easeOutCubic,
-      );
-    });
-  }
-
-  Future<void> _saveHomework() async {
-    final trackId = studentTrackModel?.id;
-    final studentId = Constant.student?.id;
-    final homework = homeworkCon.text.trim();
-    if (trackId == null ||
-        studentId == null ||
-        isSavingHomework ||
-        homework == _savedHomework.trim()) {
-      return;
-    }
-
-    isSavingHomework = true;
-    setState(() {});
-
-    final isSuccess = await updateStudentTrackHomework(
-      context: context,
-      trackId: trackId,
-      studentId: studentId,
-      homework: homework,
-    );
-
-    if (!mounted) {
-      return;
-    }
-
-    if (isSuccess) {
-      for (final track in studentTracks) {
-        if (track is Map && track['id'] == trackId) {
-          track['homework'] = homework;
-          break;
-        }
-      }
-      studentTrackModel = StudentDailyTrackModel.fromJson({
-        ...studentTrackModel!.toJson(),
-        'homework': homework,
-      });
-      _savedHomework = homework;
-      homeworkCon.text = homework;
-      homeworkCon.selection = TextSelection.collapsed(offset: homework.length);
-    }
-
-    isSavingHomework = false;
-    setState(() {});
-  }
-
-  void _setHomeworkFromTrack() {
-    _savedHomework = studentTrackModel?.homework ?? '';
-    homeworkCon.text = _savedHomework;
-  }
 
   void _selectDailyTrackForDate(DateTime selectedDate) {
     date = selectedDate;
@@ -125,263 +56,6 @@ class _StudentDailyTrackPageState extends State<StudentDailyTrackPage> {
     } else {
       studentTrackModel = null;
     }
-    _setHomeworkFromTrack();
-  }
-
-  bool get _hasHomeworkChanges =>
-      homeworkCon.text.trim() != _savedHomework.trim();
-
-  String get _homeworkStatusText {
-    if (isSavingHomework) {
-      return 'جار الحفظ';
-    }
-    if (_hasHomeworkChanges) {
-      return 'تعديلات غير محفوظة';
-    }
-    return _savedHomework.trim().isEmpty ? 'لم تكتب بعد' : 'محفوظة';
-  }
-
-  Widget _buildHomeworkEditor() {
-    if (isWeaklyTrack || studentTrackModel == null) {
-      return const SizedBox.shrink();
-    }
-
-    final canSave = _hasHomeworkChanges && !isSavingHomework;
-    final isSaveButtonActive = canSave || isSavingHomework;
-    final hasText = homeworkCon.text.trim().isNotEmpty;
-
-    return Directionality(
-      textDirection: TextDirection.rtl,
-      child: Container(
-        width: 291.w,
-        padding: EdgeInsets.fromLTRB(14.w, 14.h, 14.w, 12.h),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(16.sp),
-          border: Border.all(color: AppColors.appBarColor, width: 1.2),
-          boxShadow: const [
-            BoxShadow(
-              color: Color(0x14000000),
-              blurRadius: 16,
-              offset: Offset(0, 6),
-            ),
-          ],
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                Container(
-                  width: 34.w,
-                  height: 34.h,
-                  decoration: BoxDecoration(
-                    color: AppColors.appBarColor,
-                    borderRadius: BorderRadius.circular(10.sp),
-                  ),
-                  child: Icon(
-                    Icons.edit_note_rounded,
-                    color: AppColors.brownColor,
-                    size: 22.sp,
-                  ),
-                ),
-                SizedBox(width: 9.w),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'المعاهدة اليومية',
-                        overflow: TextOverflow.ellipsis,
-                        style: TextStyle(
-                          color: AppColors.darkBrownColor,
-                          fontSize: 16.sp,
-                          fontFamily: 'Almarai',
-                          fontWeight: FontWeight.w700,
-                        ),
-                      ),
-                      SizedBox(height: 2.h),
-                      Text(
-                        date.toCustomString(),
-                        overflow: TextOverflow.ellipsis,
-                        style: TextStyle(
-                          color: AppColors.greyBrownColor,
-                          fontSize: 11.sp,
-                          fontFamily: 'Almarai',
-                          fontWeight: FontWeight.w700,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-            SizedBox(height: 8.h),
-            AnimatedContainer(
-              duration: const Duration(milliseconds: 180),
-              width: double.infinity,
-              constraints: BoxConstraints(minHeight: 28.h),
-              padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 6.h),
-              decoration: BoxDecoration(
-                color: _hasHomeworkChanges
-                    ? AppColors.lightGreen
-                    : AppColors.appBarColor,
-                borderRadius: BorderRadius.circular(12.sp),
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(
-                    _hasHomeworkChanges
-                        ? Icons.mode_edit_outline_rounded
-                        : Icons.check_circle_outline_rounded,
-                    color: AppColors.brownColor,
-                    size: 14.sp,
-                  ),
-                  SizedBox(width: 5.w),
-                  Flexible(
-                    child: Text(
-                      _homeworkStatusText,
-                      maxLines: 1,
-                      softWrap: false,
-                      overflow: TextOverflow.visible,
-                      style: TextStyle(
-                        color: AppColors.brownColor,
-                        fontSize: 11.sp,
-                        fontFamily: 'Almarai',
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            SizedBox(height: 12.h),
-            Container(
-              constraints: BoxConstraints(minHeight: 126.h),
-              padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 8.h),
-              decoration: BoxDecoration(
-                color: AppColors.appBarColor.withValues(alpha: 0.62),
-                borderRadius: BorderRadius.circular(12.sp),
-              ),
-              child: TextField(
-                controller: homeworkCon,
-                focusNode: _homeworkFocusNode,
-                keyboardType: TextInputType.multiline,
-                textInputAction: TextInputAction.newline,
-                minLines: 5,
-                maxLines: 7,
-                textAlign: TextAlign.right,
-                scrollPadding: EdgeInsets.only(
-                  bottom: MediaQuery.viewInsetsOf(context).bottom + 150.h,
-                ),
-                style: TextStyle(
-                  color: AppColors.darkBrownColor,
-                  fontSize: 14.sp,
-                  height: 1.55,
-                  fontFamily: 'Almarai',
-                  fontWeight: FontWeight.w700,
-                ),
-                decoration: InputDecoration(
-                  border: InputBorder.none,
-                  isCollapsed: true,
-                  hintText: 'ما الذي سيُراجع في البيت؟',
-                  hintStyle: TextStyle(
-                    color: AppColors.darkBrownColor.withValues(alpha: 0.45),
-                    fontSize: 13.sp,
-                    fontFamily: 'Almarai',
-                    fontWeight: FontWeight.w700,
-                  ),
-                ),
-                onChanged: (_) => setState(() {}),
-                onTapOutside: (_) => FocusScope.of(context).unfocus(),
-              ),
-            ),
-            SizedBox(height: 12.h),
-            Row(
-              children: [
-                GestureDetector(
-                  onTap: hasText
-                      ? () {
-                          homeworkCon.clear();
-                          setState(() {});
-                        }
-                      : null,
-                  child: AnimatedContainer(
-                    duration: const Duration(milliseconds: 180),
-                    width: 40.w,
-                    height: 38.h,
-                    decoration: BoxDecoration(
-                      color: hasText
-                          ? const Color(0xffF8EFEF)
-                          : AppColors.appBarColor.withValues(alpha: 0.45),
-                      borderRadius: BorderRadius.circular(12.sp),
-                    ),
-                    child: Icon(
-                      Icons.close_rounded,
-                      color: hasText
-                          ? const Color(0xffB94A48)
-                          : AppColors.greyBrownColor.withValues(alpha: 0.45),
-                      size: 19.sp,
-                    ),
-                  ),
-                ),
-                SizedBox(width: 8.w),
-                Expanded(
-                  child: GestureDetector(
-                    onTap: canSave ? _saveHomework : null,
-                    child: AnimatedContainer(
-                      duration: const Duration(milliseconds: 180),
-                      height: 38.h,
-                      alignment: Alignment.center,
-                      decoration: BoxDecoration(
-                        color: isSaveButtonActive
-                            ? AppColors.brownColor
-                            : AppColors.appBarColor,
-                        borderRadius: BorderRadius.circular(12.sp),
-                      ),
-                      child: isSavingHomework
-                          ? SizedBox(
-                              width: 18.w,
-                              height: 18.h,
-                              child: const CircularProgressIndicator(
-                                strokeWidth: 2,
-                                color: Colors.white,
-                              ),
-                            )
-                          : Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Icon(
-                                  Icons.save_outlined,
-                                  color: isSaveButtonActive
-                                      ? Colors.white
-                                      : AppColors.brownColor,
-                                  size: 16.sp,
-                                ),
-                                SizedBox(width: 6.w),
-                                Text(
-                                  'حفظ المعاهدة',
-                                  style: TextStyle(
-                                    color: isSaveButtonActive
-                                        ? Colors.white
-                                        : AppColors.brownColor,
-                                    fontSize: 14.sp,
-                                    fontFamily: 'Almarai',
-                                    fontWeight: FontWeight.w700,
-                                  ),
-                                ),
-                              ],
-                            ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ],
-        ),
-      ),
-    );
   }
 
   Map<dynamic, dynamic> get _weeklyProgressSum {
@@ -763,40 +437,6 @@ class _StudentDailyTrackPageState extends State<StudentDailyTrackPage> {
             onTap: () async {
               if (!Constant.isThereLoading) {
                 Constant.isThereLoading = true;
-                int code = await getStudentTest(
-                  context: context,
-                  testType: 'أوقاف',
-                );
-                _scaffoldKey.currentState?.closeEndDrawer();
-                Constant.isThereLoading = false;
-                if (code == 401) {
-                  setState(() {});
-                }
-              }
-            },
-            text: 'سبر الأوقاف',
-          ),
-          DrawerItem(
-            onTap: () async {
-              if (!Constant.isThereLoading) {
-                Constant.isThereLoading = true;
-                int code = await getStudentTest(
-                  context: context,
-                  testType: 'منهج',
-                );
-                _scaffoldKey.currentState?.closeEndDrawer();
-                Constant.isThereLoading = false;
-                if (code == 401) {
-                  setState(() {});
-                }
-              }
-            },
-            text: 'علامات المنهج',
-          ),
-          DrawerItem(
-            onTap: () async {
-              if (!Constant.isThereLoading) {
-                Constant.isThereLoading = true;
                 int code = await getStudentGrades(context);
                 _scaffoldKey.currentState?.closeEndDrawer();
                 Constant.isThereLoading = false;
@@ -806,6 +446,22 @@ class _StudentDailyTrackPageState extends State<StudentDailyTrackPage> {
               }
             },
             text: 'الشهادات',
+          ),
+          DrawerItem(
+            onTap: () async {
+              if (!Constant.isThereLoading) {
+                Constant.isThereLoading = true;
+                int? statusCode = await openAboutInstitutePage(
+                  context: context,
+                  scaffoldKey: _scaffoldKey,
+                );
+                Constant.isThereLoading = false;
+                if ((statusCode == 405 || statusCode == 401) && mounted) {
+                  setState(() {});
+                }
+              }
+            },
+            text: 'نبذة عن المعهد',
           ),
           DrawerItem(
             onTap: () async {
@@ -894,7 +550,6 @@ class _StudentDailyTrackPageState extends State<StudentDailyTrackPage> {
               curve: Curves.easeOutCubic,
               padding: EdgeInsets.only(bottom: keyboardHeight > 0 ? 12.h : 0),
               child: SingleChildScrollView(
-                controller: _scrollController,
                 keyboardDismissBehavior:
                     ScrollViewKeyboardDismissBehavior.onDrag,
                 padding: EdgeInsets.only(
@@ -939,8 +594,6 @@ class _StudentDailyTrackPageState extends State<StudentDailyTrackPage> {
                                                         fontFamily: 'Almarai',
                                                       ),
                                                     ),
-                                                    SizedBox(height: 20.h),
-                                                    _buildHomeworkEditor(),
                                                   ],
                                                 )
                                               : SingleChildScrollView(
@@ -1417,7 +1070,6 @@ class _StudentDailyTrackPageState extends State<StudentDailyTrackPage> {
                                                             )
                                                           : SizedBox.shrink(),
                                                       SizedBox(height: 16.h),
-                                                      _buildHomeworkEditor(),
                                                       isWeaklyTrack
                                                           ? SizedBox.shrink()
                                                           : Container(
@@ -1564,7 +1216,6 @@ class _StudentDailyTrackPageState extends State<StudentDailyTrackPage> {
                                           withoutOrder: 0,
                                           quranProject: '',
                                           nots: '',
-                                          homework: '',
                                           behave: 0,
                                           pointsCount:
                                               _weeklyProgressSum['points_count'] ??
@@ -1595,7 +1246,6 @@ class _StudentDailyTrackPageState extends State<StudentDailyTrackPage> {
                                           quranVocabProgress: [],
                                           className: '',
                                         );
-                                        _setHomeworkFromTrack();
                                       }
                                       setState(() {});
                                     }
@@ -1626,12 +1276,6 @@ class _StudentDailyTrackPageState extends State<StudentDailyTrackPage> {
 
   @override
   void initState() {
-    homeworkCon = TextEditingController();
-    _homeworkFocusNode.addListener(() {
-      if (_homeworkFocusNode.hasFocus) {
-        _scrollToHomeworkEditor();
-      }
-    });
     date = DateTime.now();
     studentTracks = widget.studentDailyTrack;
     if (studentTracks.isNotEmpty) {
@@ -1641,7 +1285,6 @@ class _StudentDailyTrackPageState extends State<StudentDailyTrackPage> {
           Map<String, dynamic>.from(firstTrack),
         );
         date = studentTrackModel!.date;
-        _setHomeworkFromTrack();
       }
     }
     super.initState();
@@ -1666,7 +1309,6 @@ class _StudentDailyTrackPageState extends State<StudentDailyTrackPage> {
           Map<String, dynamic>.from(firstTrack),
         );
         date = studentTrackModel!.date;
-        _setHomeworkFromTrack();
       }
     } else {
       _selectDailyTrackForDate(date);
@@ -1675,9 +1317,6 @@ class _StudentDailyTrackPageState extends State<StudentDailyTrackPage> {
 
   @override
   void dispose() {
-    _homeworkFocusNode.dispose();
-    _scrollController.dispose();
-    homeworkCon.dispose();
     super.dispose();
   }
 }
